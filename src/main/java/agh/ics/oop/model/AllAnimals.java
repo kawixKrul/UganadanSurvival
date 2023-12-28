@@ -4,6 +4,7 @@ package agh.ics.oop.model;
 import agh.ics.oop.interfaces.MoveValidator;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.TreeSet;
 public class AllAnimals {
@@ -13,7 +14,6 @@ public class AllAnimals {
     public float averageTimeOfDeath = 0;
     public int deadAnimals = 0;
     private MoveValidator moveValidator;
-
     public void addAnimal(AbstractAnimal animal) {
         animalsByPosition.computeIfAbsent(animal.getPosition(), k -> new TreeSet<>());
         animalsByPosition.get(animal.getPosition()).add(animal);
@@ -30,7 +30,10 @@ public class AllAnimals {
 
     public AbstractAnimal strongestAnimalAtPosition(Vector2d position) {
         // wybieranie najlepszego animala na pozycji do zjedzenia trawy
-        return null;
+        if (animalsByPosition.get(position) != null && !animalsByPosition.get(position).isEmpty()) {
+            return animalsByPosition.get(position).last();
+        } else return null;
+
     }
     public void moveAnimals() {
         allAnimals.forEach(a -> a.move(moveValidator));
@@ -42,9 +45,21 @@ public class AllAnimals {
                 AbstractAnimal second = set.lower(first);
                 if (second != null && second.getEnergy() >= energyToBreed) {
                     // dodaj animala
+                    //map.addAnimal(first.procreate(second));
                 }
             }
         });
+    }
+    public void checkIfAllAnimalsAlive(int day){
+        Iterator<AbstractAnimal> iter = allAnimals.iterator();
+        while (iter.hasNext()){
+            AbstractAnimal animal = iter.next();
+            if (animal.checkIfAlive(day)){
+                iter.remove();
+                averageTimeOfDeath = (averageTimeOfDeath * deadAnimals + animal.getAge()) / (deadAnimals + 1);
+                deadAnimals++;
+            }
+        }
     }
     public boolean eatGrassAtPosition(Vector2d position, AbstractPlant energyGain) {
         TreeSet<AbstractAnimal> animals = animalsByPosition.get(position);
