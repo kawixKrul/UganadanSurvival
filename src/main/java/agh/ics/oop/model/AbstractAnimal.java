@@ -77,7 +77,7 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
                             strongerAnimal.genome.subList(genome.size()-genomeDistribution, genome.size()).stream())
                             .toList();
             default ->
-                    throw new IllegalStateException("Unexpected value: " + (Math.random() > 0.5 ? "stronger" : "weaker"));
+                    throw new IllegalStateException("Unexpected value: no bitches?");
         });
         this.energy -= REQUIRED_ENERGY_TO_PROCREATE;
         other.energy -= REQUIRED_ENERGY_TO_PROCREATE;
@@ -168,6 +168,10 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
 
     public List<Integer> getGenome() {
         return genome;
+    }
+
+    public int getEnergy() {
+        return energy;
     }
 
     @Override
