@@ -20,6 +20,7 @@ public class ToxicMap extends AbstractMap{
             this.squareStartX = (int) Math.floor(width /2.0) - (int) Math.floor(squaresize /2.0);
             this.squareEndX = (int) Math.floor(width /2.0) + (int) Math.floor(squaresize /2.0);
         }
+
         else {
             this.squareStartY = 0;
             this.squareEndY = height;
