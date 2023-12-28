@@ -1,5 +1,7 @@
 package agh.ics.oop.interfaces;
 
+import agh.ics.oop.exceptions.MapBoundsReachedException;
+import agh.ics.oop.exceptions.ToxicPlantSpottedException;
 import agh.ics.oop.model.Vector2d;
 
 public interface MoveValidator {
@@ -11,5 +13,5 @@ public interface MoveValidator {
      *            The position checked for the movement possibility.
      * @return True if the object can move to that position.
      */
-    boolean canMoveTo(Vector2d position);
+    boolean canMoveTo(Vector2d position) throws ToxicPlantSpottedException, MapBoundsReachedException;
 }
