@@ -11,6 +11,10 @@ public class Vector2d {
         this.y = y;
     }
 
+    public static Vector2d getRandomVector2d() {
+        return new Vector2d((int)(Math.random() * x), (int)(Math.random() * y));
+    }
+
     public int getX() {
         return x;
     }
