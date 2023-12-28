@@ -1,6 +1,7 @@
 package agh.ics.oop.interfaces;
 
-import agh.ics.oop.model.Animal;
+import agh.ics.oop.model.AbstractAnimal;
+import agh.ics.oop.model.Boundary;
 import agh.ics.oop.model.Vector2d;
 
 import java.util.List;
@@ -13,13 +14,13 @@ public interface WorldMap {
      *
      * @param animal The animal to place on the map.
      */
-    void place(Animal animal);
+    void place(AbstractAnimal animal);
 
     /**
      * Moves an animal (if it is present on the map) according to specified direction.
      * If the move is not possible, this method has no effect.
      */
-    void move(Animal animal, MoveDirection direction);
+    void move(AbstractAnimal animal);
 
     /**
      * Return true if given position on the map is occupied. Should not be
