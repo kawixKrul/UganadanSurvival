@@ -174,6 +174,10 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
         return energy;
     }
 
+    public int getAge() {
+        return age;
+    }
+
     @Override
     public String toString() {
         return "Animal{" +
