@@ -2,10 +2,8 @@ package agh.ics.oop.abstractions;
 
 import agh.ics.oop.interfaces.AbstractFactory;
 import agh.ics.oop.model.Boundary;
-import agh.ics.oop.model.GenomePattern;
+import agh.ics.oop.util.GenomePattern;
 import agh.ics.oop.model.Vector2d;
-
-import java.util.List;
 
 abstract public class AbstractAnimalFactory implements AbstractFactory<AbstractAnimal> {
     protected final int startEnergy;

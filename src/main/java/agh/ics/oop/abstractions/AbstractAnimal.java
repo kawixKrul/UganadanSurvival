@@ -5,27 +5,20 @@ import agh.ics.oop.exceptions.MapBoundsReachedException;
 import agh.ics.oop.exceptions.ToxicPlantSpottedException;
 import agh.ics.oop.interfaces.MoveValidator;
 import agh.ics.oop.interfaces.WorldElement;
-import agh.ics.oop.model.CrazyAnimal;
 import agh.ics.oop.model.Genome;
-import agh.ics.oop.model.RegularAnimal;
 import agh.ics.oop.model.Vector2d;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public abstract class AbstractAnimal implements WorldElement, Comparable<AbstractAnimal> {
-    public static final int REQUIRED_ENERGY_TO_PROCREATE = 40;
-    public static final int REQUIRED_ENERGY_TO_SURVIVE = 0;
-    public static final int REQUIRED_ENERGY_TO_MOVE = 10;
+    private static final int REQUIRED_ENERGY_TO_MOVE = 5;
     private MapDirection orientation;
     private Vector2d position;
     protected final Genome genome;
     private int energy;
     private int age;
-    protected int geneActive;
     private final List<AbstractAnimal> children;
     private int deathDay;
     private int grassConsumed;
@@ -41,6 +34,35 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
         this.grassConsumed = 0;
     }
 
+    public List<Integer> reproduce(AbstractAnimal other, int energyConsumption) {
+        var stronger = this.energy > other.energy ? this : other;
+        var weaker = this.energy > other.energy ? other : this;
+        var dominant = Math.random() > 0.5;
+        int distribution = stronger.energy / (stronger.energy + weaker.energy)*genome.getGenomeLength();
+        if (dominant) {
+            stronger.energy -= energyConsumption;
+            weaker.energy -= energyConsumption;
+            return Stream.concat(
+                    stronger.genome.getGenes()
+                            .subList(0, distribution)
+                            .stream(),
+                    weaker.genome.getGenes()
+                            .subList(distribution, genome.getGenomeLength())
+                            .stream()
+            ).toList();
+        } else {
+            stronger.energy -= energyConsumption;
+            weaker.energy -= energyConsumption;
+            return Stream.concat(
+                    weaker.genome.getGenes()
+                            .subList(0, genome.getGenomeLength() - distribution)
+                            .stream(),
+                    stronger.genome.getGenes()
+                            .subList(genome.getGenomeLength() - distribution, genome.getGenomeLength())
+                            .stream()
+            ).toList();
+        }
+    }
 
     /**
      * standard variant of move method for both map implementations
@@ -80,7 +102,7 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
      * @return true if animal lives false otherwise
      */
     public boolean checkIfAlive(int day) {
-        return switch (this.energy < REQUIRED_ENERGY_TO_SURVIVE ? 0 : 1) {
+        return switch (this.energy < 0 ? 0 : 1) {
             case 0 -> {
                 this.deathDay = day;
                 yield false;
@@ -128,7 +150,6 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
                 ", genome=" + genome +
                 ", energy=" + energy +
                 ", age=" + age +
-                ", geneActive=" + geneActive +
                 ", children=" + children +
                 ", deathDay=" + deathDay +
                 ", grassConsumed=" + grassConsumed +

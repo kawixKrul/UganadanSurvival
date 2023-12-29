@@ -1,6 +1,7 @@
-package agh.ics.oop.model;
+package agh.ics.oop.util;
 
 import agh.ics.oop.interfaces.AbstractFactory;
+import agh.ics.oop.model.Genome;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,7 +26,12 @@ public class GenomePattern implements AbstractFactory<Genome> {
                 .toList());
     }
 
-    public Genome mutate(Genome genome) {
+
+    public Genome create(ArrayList<Integer> genome) {
+        return this.mutate(new Genome(genome));
+    }
+
+    private Genome mutate(Genome genome) {
         var mutator = new Random();
         var mutations = mutator.nextInt() % (maximumMutations-minimumMutations) + minimumMutations;
         var indexes = new ArrayList<>(IntStream.range(0, genomeLength)

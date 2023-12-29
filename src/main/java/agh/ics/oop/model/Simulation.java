@@ -3,6 +3,7 @@ package agh.ics.oop.model;
 import agh.ics.oop.abstractions.AbstractAnimalFactory;
 import agh.ics.oop.abstractions.AbstractMap;
 import agh.ics.oop.interfaces.WorldMap;
+import agh.ics.oop.util.GenomePattern;
 
 import java.util.UUID;
 

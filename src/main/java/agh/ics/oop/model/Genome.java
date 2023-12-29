@@ -33,4 +33,11 @@ public class Genome {
         }
     }
 
+    public List<Integer> getGenes() {
+        return genes;
+    }
+
+    public int getGenomeLength() {
+        return genes.size();
+    }
 }

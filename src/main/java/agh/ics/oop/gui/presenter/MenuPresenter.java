@@ -3,6 +3,7 @@ package agh.ics.oop.gui.presenter;
 import agh.ics.oop.exceptions.WrongSimulationParameterValueException;
 import agh.ics.oop.model.*;
 import agh.ics.oop.util.CrazyAnimalFactory;
+import agh.ics.oop.util.GenomePattern;
 import agh.ics.oop.util.RegularAnimalFactory;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
