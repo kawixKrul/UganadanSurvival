@@ -44,7 +44,7 @@
             </HBox>
             <HBox spacing="10">
                 <Label text="Enter how much energy is used for animals to breed:" />
-                <TextField fx:id="breedingReadyEnergy" text="40"  minWidth="300" />
+                <TextField fx:id="breedingRequiredEnergy" text="40" minWidth="300" />
             </HBox>
             <HBox spacing="10">
                 <Label text="Enter minimum number for each mutation:" />

@@ -38,21 +38,7 @@ public enum MapDirection {
         };
     }
 
-    private MapDirection intToDirection(int rotation) {
-        return switch (rotation) {
-            case 0 -> NORTH;
-            case 1 -> NORTHEAST;
-            case 2 -> EAST;
-            case 3 -> SOUTHEAST;
-            case 4 -> SOUTH;
-            case 5 -> SOUTHWEST;
-            case 6 -> WEST;
-            case 7 -> NORTHWEST;
-            default -> throw new IllegalArgumentException(rotation + " is not a valid rotation");
-        };
-    }
-
     public MapDirection next(int rotation) {
-        return intToDirection((rotation + this.ordinal()) % 8);
+        return MapDirection.values()[(rotation + this.ordinal()) % 8];
     }
 }

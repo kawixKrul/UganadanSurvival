@@ -1,11 +1,20 @@
 package agh.ics.oop.model;
 
 
-public class Grass extends AbstractPlant {
-    public static final int ENERGY = 10;
+import agh.ics.oop.abstractions.AbstractPlant;
+import javafx.scene.image.Image;
 
-    public Grass(Vector2d position) {
-        super(position);
+public class Grass extends AbstractPlant {
+    public static final String IMAGE_PATH = "src/main/resources/grass.png";
+
+    public Grass(Vector2d position, int energy) {
+        super(position, energy);
+    }
+
+
+    @Override
+    public int getEnergy() {
+        return this.energy;
     }
 
     @Override
@@ -14,7 +23,7 @@ public class Grass extends AbstractPlant {
     }
 
     @Override
-    public int getEnergy() {
-        return ENERGY;
+    public Image getClassImage() {
+        return new Image(IMAGE_PATH);
     }
 }

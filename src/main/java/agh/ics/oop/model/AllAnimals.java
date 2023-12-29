@@ -1,6 +1,9 @@
 package agh.ics.oop.model;
 
 
+import agh.ics.oop.abstractions.AbstractAnimal;
+import agh.ics.oop.abstractions.AbstractMap;
+import agh.ics.oop.abstractions.AbstractPlant;
 import agh.ics.oop.interfaces.MoveValidator;
 
 import java.util.HashMap;

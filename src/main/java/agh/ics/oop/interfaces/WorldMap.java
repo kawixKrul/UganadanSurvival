@@ -1,6 +1,6 @@
 package agh.ics.oop.interfaces;
 
-import agh.ics.oop.model.AbstractAnimal;
+import agh.ics.oop.abstractions.AbstractAnimal;
 import agh.ics.oop.model.Boundary;
 import agh.ics.oop.model.Vector2d;
 

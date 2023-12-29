@@ -2,9 +2,22 @@
 
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.control.Label?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             minWidth="1920" minHeight="1080"
             fx:controller="agh.ics.oop.gui.presenter.SimulationPresenter">
+    <top>
+        <HBox>
+            <Label text="Animal Details:"/>
+            <Label fx:id="descriptionLabel"/>
+        </HBox>
+    </top>
+
+    <center>
+        <HBox alignment="CENTER">
+            <GridPane fx:id="mapGrid" alignment="CENTER" gridLinesVisible="true"/>
+        </HBox>
+    </center>
 
 </BorderPane>

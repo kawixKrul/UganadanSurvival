@@ -1,9 +1,15 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.abstractions.AbstractAnimal;
+import agh.ics.oop.abstractions.AbstractMap;
+import agh.ics.oop.interfaces.WorldElement;
+
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
 
-public class ToxicMap extends AbstractMap{
+public class ToxicMap extends AbstractMap {
     private final int squareStartX;
     private final int squareStartY;
     private final int squareEndX;
@@ -44,10 +50,10 @@ public class ToxicMap extends AbstractMap{
         if (spots.size() > 0) {
             Collections.shuffle(spots);
             if (Math.random() < chanceOfContamination) {
-                grassSet.put(spots.get(0), new ToxicPlant(spots.get(0)));
+                grassSet.put(spots.get(0), new ToxicPlant(spots.get(0), 0));
             }
             else{
-                grassSet.put(spots.get(0), new Grass(spots.get(0)));
+                grassSet.put(spots.get(0), new Grass(spots.get(0), 0));
             }
 
             return true;
@@ -91,10 +97,45 @@ public class ToxicMap extends AbstractMap{
         }
         if (spots.size() > 0) {
             Collections.shuffle(spots);
-            grassSet.put(spots.get(0), new Grass(spots.get(0)));
+            grassSet.put(spots.get(0), new Grass(spots.get(0), 0));
             return true;
         } else {
             return false;
         }
+    }
+
+    @Override
+    public void place(AbstractAnimal animal) {
+
+    }
+
+    @Override
+    public void move(AbstractAnimal animal) {
+
+    }
+
+    @Override
+    public boolean isOccupied(Vector2d position) {
+        return false;
+    }
+
+    @Override
+    public WorldElement objectAt(Vector2d position) {
+        return null;
+    }
+
+    @Override
+    public List<WorldElement> getElements() {
+        return null;
+    }
+
+    @Override
+    public Boundary getCurrentBounds() {
+        return null;
+    }
+
+    @Override
+    public UUID getId() {
+        return null;
     }
 }

@@ -1,7 +1,10 @@
 package agh.ics.oop.gui.presenter;
 
 import agh.ics.oop.exceptions.WrongSimulationParameterValueException;
-import agh.ics.oop.model.Simulation;
+import agh.ics.oop.model.*;
+import agh.ics.oop.util.CrazyAnimalFactory;
+import agh.ics.oop.util.GenomePattern;
+import agh.ics.oop.util.RegularAnimalFactory;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -34,7 +37,7 @@ public class MenuPresenter {
     @FXML
     private TextField startingAnimalEnergy;
     @FXML
-    private TextField breedingReadyEnergy;
+    private TextField breedingRequiredEnergy;
     @FXML
     private TextField breedingConsumptionEnergy;
     @FXML
@@ -55,7 +58,7 @@ public class MenuPresenter {
     public void validateInput() throws WrongSimulationParameterValueException {
         if (mapWidth.getText().isEmpty() || mapHeight.getText().isEmpty() || startingPlantCount.getText().isEmpty() ||
                 plantEnergy.getText().isEmpty() || plantGrowthPerDay.getText().isEmpty() || startingAnimalCount.getText().isEmpty() ||
-                startingAnimalEnergy.getText().isEmpty() || breedingReadyEnergy.getText().isEmpty() || breedingConsumptionEnergy.getText().isEmpty() ||
+                startingAnimalEnergy.getText().isEmpty() || breedingRequiredEnergy.getText().isEmpty() || breedingConsumptionEnergy.getText().isEmpty() ||
                 minimumMutationNumber.getText().isEmpty() || maximumMutationNumber.getText().isEmpty() || genomeLength.getText().isEmpty()) {
             throw new WrongSimulationParameterValueException("All fields must be filled");
         }
@@ -81,8 +84,8 @@ public class MenuPresenter {
             if (Integer.parseInt(startingAnimalEnergy.getText()) < 0) {
                 throw new WrongSimulationParameterValueException("Starting animal energy must be a positive number");
             }
-            if (Integer.parseInt(breedingReadyEnergy.getText()) < 0) {
-                throw new WrongSimulationParameterValueException("Breeding ready energy must be a positive number");
+            if (Integer.parseInt(breedingRequiredEnergy.getText()) < 0) {
+                throw new WrongSimulationParameterValueException("Breeding required energy must be a positive number");
             }
             if (Integer.parseInt(breedingConsumptionEnergy.getText()) < 0) {
                 throw new WrongSimulationParameterValueException("Breeding consumption energy must be a positive number");
@@ -93,8 +96,8 @@ public class MenuPresenter {
             if (Integer.parseInt(maximumMutationNumber.getText()) < 0) {
                 throw new WrongSimulationParameterValueException("Maximum mutation number must be a positive number");
             }
-            if (Integer.parseInt(genomeLength.getText()) < 0) {
-                throw new WrongSimulationParameterValueException("Genome length must be a positive number");
+            if (Integer.parseInt(genomeLength.getText()) < 1) {
+                throw new WrongSimulationParameterValueException("Genome must have at least one gene");
             }
             if (Integer.parseInt(minimumMutationNumber.getText()) > Integer.parseInt(maximumMutationNumber.getText())) {
                 throw new WrongSimulationParameterValueException("Minimum mutation number must be smaller or equal than maximum mutation number");
@@ -111,23 +114,56 @@ public class MenuPresenter {
         try {
             errorLabel.setText("ALL GUCCI");
             validateInput();
-            // TODO FIX ORDER TO MATCH THAT OF SIMULATION CONSTRUCTOR
-            var simulation = new Simulation(
-                    Integer.parseInt(mapWidth.getText()),
-                    Integer.parseInt(mapHeight.getText()),
-                    Integer.parseInt(startingPlantCount.getText()),
-                    Integer.parseInt(plantEnergy.getText()),
-                    Integer.parseInt(plantGrowthPerDay.getText()),
-                    Integer.parseInt(startingAnimalCount.getText()),
-                    Integer.parseInt(startingAnimalEnergy.getText()),
-                    Integer.parseInt(breedingReadyEnergy.getText()),
-                    Integer.parseInt(breedingConsumptionEnergy.getText()),
+
+            var genomePattern = new GenomePattern(
                     Integer.parseInt(minimumMutationNumber.getText()),
                     Integer.parseInt(maximumMutationNumber.getText()),
-                    Integer.parseInt(genomeLength.getText()),
-                    crazyAnimalEnabled.isSelected(),
-                    toxicPlantsEnabled.isSelected(),
-                    saveToFileEnabled.isSelected()
+                    Integer.parseInt(genomeLength.getText())
+            );
+            var boundary = new Boundary(
+                    new Vector2d(0, 0),
+                    new Vector2d(Integer.parseInt(mapWidth.getText()), Integer.parseInt(mapHeight.getText())));
+            var factory = switch(crazyAnimalEnabled.isSelected() ? 0 : 1) {
+                case 0 -> new CrazyAnimalFactory(
+                        Integer.parseInt(startingAnimalEnergy.getText()),
+                        genomePattern,
+                        Integer.parseInt(breedingConsumptionEnergy.getText()),
+                        boundary
+                );
+                case 1 -> new RegularAnimalFactory(
+                        Integer.parseInt(startingAnimalEnergy.getText()),
+                        genomePattern,
+                        Integer.parseInt(breedingConsumptionEnergy.getText()),
+                        boundary
+                );
+                default ->
+                        throw new IllegalStateException("Unexpected value: " + (crazyAnimalEnabled.isSelected() ? 0 : 1));
+            };
+            var map = switch(toxicPlantsEnabled.isSelected() ? 0 : 1) {
+                case 0 -> new ToxicMap(
+                        Integer.parseInt(mapWidth.getText()),
+                        Integer.parseInt(mapHeight.getText()),
+                        // TODO zmienic w konstrukotrze toxicmap te wartosci
+                        // powinno przyjmowac boundary imo
+                        0,
+                        0
+                );
+                case 1 -> new NormalMap(
+                        Integer.parseInt(mapWidth.getText()),
+                        Integer.parseInt(mapHeight.getText())
+                );
+                default ->
+                        throw new IllegalStateException("Unexpected value: " + (toxicPlantsEnabled.isSelected() ? 0 : 1));
+            };
+            var simulation = new Simulation(
+                    map,
+                    factory,
+                    genomePattern,
+                    Integer.parseInt(plantGrowthPerDay.getText()),
+                    Integer.parseInt(breedingRequiredEnergy.getText()),
+                    Integer.parseInt(breedingConsumptionEnergy.getText()),
+                    Integer.parseInt(startingPlantCount.getText()),
+                    Integer.parseInt(startingAnimalCount.getText())
             );
 
             Stage simulationStage = new Stage();
@@ -137,6 +173,8 @@ public class MenuPresenter {
 
             SimulationPresenter simulationPresenter = loader.getController();
             simulationPresenter.setSimulation(simulation);
+
+            configureSimulationScene(simulationStage, rootPane);
 
             simulationStage.show();
             executorService.submit(simulation);
@@ -151,8 +189,6 @@ public class MenuPresenter {
         simulationStage.setScene(new Scene(rootPane));
         simulationStage.minWidthProperty().bind(rootPane.minWidthProperty());
         simulationStage.minHeightProperty().bind(rootPane.minHeightProperty());
-        simulationStage.setOnCloseRequest(event -> {
-            simulationStage.close();
-        });
+        simulationStage.setOnCloseRequest(event -> simulationStage.close());
     }
 }
