@@ -15,8 +15,8 @@ public class Vector2d {
     public static Vector2d getRandomVector2d(Boundary boundary) {
         var random = new Random();
         return new Vector2d(
-                random.nextInt(boundary.width()),
-                random.nextInt(boundary.height())
+                random.nextInt(boundary.upperRight().getX()),
+                random.nextInt(boundary.upperRight().getY())
         );
     }
 

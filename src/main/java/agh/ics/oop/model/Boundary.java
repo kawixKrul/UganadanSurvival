@@ -1,4 +1,4 @@
 package agh.ics.oop.model;
 
-public record Boundary(int width, int height) {
+public record Boundary(Vector2d lowerLeft, Vector2d upperRight) {
 }

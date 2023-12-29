@@ -59,14 +59,14 @@ public class SimulationPresenter implements MapChangeListener {
         mapGrid.getRowConstraints().add(new RowConstraints(CEll_SIZE));
         mapGrid.getColumnConstraints().add(new ColumnConstraints(CEll_SIZE));
 
-        for (int i = 0, idx = 1; i < boundary.width(); i++, idx++) {
+        for (int i = 0, idx = 1; i < boundary.upperRight().getX(); i++, idx++) {
             Label label = new Label(String.valueOf(i));
             GridPane.setHalignment(label, HPos.CENTER);
             mapGrid.add(label, idx, 0, 1, 1);
             mapGrid.getColumnConstraints().add(new ColumnConstraints(CEll_SIZE));
         }
 
-        for (int i = 0, idx = 1; i < boundary.height(); i++, idx++) {
+        for (int i = 0, idx = 1; i < boundary.lowerLeft().getY(); i--, idx++) {
             Label label = new Label(String.valueOf(i));
             GridPane.setHalignment(label, HPos.CENTER);
             mapGrid.add(label, 0, idx, 1, 1);
@@ -85,7 +85,11 @@ public class SimulationPresenter implements MapChangeListener {
                 descriptionLabel.setText(element.toString());
             });
             GridPane.setHalignment(button, HPos.CENTER);
-            mapGrid.add(button, position.getX() + 1, boundary.height()-position.getY() + 1, 1, 1);
+            mapGrid.add(button,
+                    position.getX() + 1,
+                    boundary.upperRight().getY()-position.getY() + 1,
+                    1,
+                    1);
         }
     }
 

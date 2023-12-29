@@ -119,7 +119,9 @@ public class MenuPresenter {
                     Integer.parseInt(maximumMutationNumber.getText()),
                     Integer.parseInt(genomeLength.getText())
             );
-            var boundary = new Boundary(Integer.parseInt(mapWidth.getText()), Integer.parseInt(mapHeight.getText()));
+            var boundary = new Boundary(
+                    new Vector2d(0, 0),
+                    new Vector2d(Integer.parseInt(mapWidth.getText()), Integer.parseInt(mapHeight.getText())));
             var factory = switch(crazyAnimalEnabled.isSelected() ? 0 : 1) {
                 case 0 -> new CrazyAnimalFactory(
                         Integer.parseInt(startingAnimalEnergy.getText()),
@@ -186,8 +188,6 @@ public class MenuPresenter {
         simulationStage.setScene(new Scene(rootPane));
         simulationStage.minWidthProperty().bind(rootPane.minWidthProperty());
         simulationStage.minHeightProperty().bind(rootPane.minHeightProperty());
-        simulationStage.setOnCloseRequest(event -> {
-            simulationStage.close();
-        });
+        simulationStage.setOnCloseRequest(event -> simulationStage.close());
     }
 }
