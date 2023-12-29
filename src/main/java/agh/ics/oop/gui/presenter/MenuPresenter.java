@@ -171,6 +171,8 @@ public class MenuPresenter {
             SimulationPresenter simulationPresenter = loader.getController();
             simulationPresenter.setSimulation(simulation);
 
+            configureSimulationScene(simulationStage, rootPane);
+
             simulationStage.show();
             executorService.submit(simulation);
 
