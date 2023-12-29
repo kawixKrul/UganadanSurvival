@@ -1,6 +1,8 @@
 package agh.ics.oop.model;
 
 
+import agh.ics.oop.abstractions.AbstractPlant;
+
 public class Grass extends AbstractPlant {
     public static final int ENERGY = 10;
 

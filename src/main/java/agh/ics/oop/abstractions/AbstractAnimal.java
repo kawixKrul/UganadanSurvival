@@ -1,10 +1,15 @@
-package agh.ics.oop.model;
+package agh.ics.oop.abstractions;
 
 import agh.ics.oop.enums.MapDirection;
 import agh.ics.oop.exceptions.MapBoundsReachedException;
 import agh.ics.oop.exceptions.ToxicPlantSpottedException;
 import agh.ics.oop.interfaces.MoveValidator;
 import agh.ics.oop.interfaces.WorldElement;
+import agh.ics.oop.model.CrazyAnimal;
+import agh.ics.oop.model.Genome;
+import agh.ics.oop.model.RegularAnimal;
+import agh.ics.oop.model.Vector2d;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +22,7 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
     public static final int REQUIRED_ENERGY_TO_MOVE = 10;
     private MapDirection orientation;
     private Vector2d position;
-    private List<Integer> genome;
+    protected final Genome genome;
     private int energy;
     private int age;
     protected int geneActive;
@@ -25,25 +30,8 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
     private int deathDay;
     private int grassConsumed;
 
-    /**
-     * constructor for initializing animals at the start of the simulation
-     */
-    public AbstractAnimal(Vector2d initialPosition, int initialEnergy, int genomeLength) {
-        this(initialPosition, initialEnergy);
-        this.genome = IntStream.range(0, genomeLength)
-                .mapToObj(i -> (int) (Math.random() * 8))
-                .toList();
-    }
-
-    /**
-     * constructor for initializing animals from procreation
-     */
-    public AbstractAnimal(Vector2d initialPosition, int initialEnergy, List<Integer> genome) {
-        this(initialPosition, initialEnergy);
+    public AbstractAnimal(Vector2d initialPosition, int initialEnergy, Genome genome) {
         this.genome = genome;
-    }
-
-    public AbstractAnimal(Vector2d initialPosition, int initialEnergy) {
         this.position = initialPosition;
         this.orientation = MapDirection.NORTH;
         this.energy = initialEnergy;
@@ -53,52 +41,6 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
         this.grassConsumed = 0;
     }
 
-    /**
-     * standard procreation method with included genome mutation
-     *
-     * @param other other animal that is trying to procreate with this animal
-     * @return corresponding subclass of AbstractAnimal if procreation was successful
-     */
-
-    public Optional<AbstractAnimal> procreate(AbstractAnimal other) {
-        if (this.energy < REQUIRED_ENERGY_TO_PROCREATE || other.energy < REQUIRED_ENERGY_TO_PROCREATE) {
-            return Optional.empty();
-        }
-        var strongerAnimal = this.energy > other.energy ? this : other;
-        var weakerAnimal = this.energy > other.energy ? other : this;
-        int genomeDistribution = strongerAnimal.energy/(strongerAnimal.energy+weakerAnimal.energy)*genome.size();
-        var childGenome = mutateGenome(switch (Math.random() > 0.5 ? "stronger" : "weaker") {
-            case "stronger" ->
-                    Stream.concat(strongerAnimal.genome.subList(0, genomeDistribution).stream(),
-                            weakerAnimal.genome.subList(genomeDistribution, genome.size()).stream())
-                            .toList();
-            case "weaker" ->
-                    Stream.concat(weakerAnimal.genome.subList(0, genome.size()-genomeDistribution).stream(),
-                            strongerAnimal.genome.subList(genome.size()-genomeDistribution, genome.size()).stream())
-                            .toList();
-            default ->
-                    throw new IllegalStateException("Unexpected value: no bitches?");
-        });
-        this.energy -= REQUIRED_ENERGY_TO_PROCREATE;
-        other.energy -= REQUIRED_ENERGY_TO_PROCREATE;
-        var child = switch (this.getClass().getSimpleName()) {
-            case "RegularAnimal" -> new RegularAnimal(this.position, REQUIRED_ENERGY_TO_PROCREATE*2, childGenome);
-            case "CrazyAnimal" -> new CrazyAnimal(this.position, REQUIRED_ENERGY_TO_PROCREATE*2, childGenome);
-            default -> throw new IllegalStateException("Unexpected value: " + this.getClass().getSimpleName());
-        };
-        this.children.add(child);
-        other.children.add(child);
-        return Optional.of(child);
-    }
-
-    private List<Integer> mutateGenome(List<Integer> genome) {
-        if (Math.random() < 0.25) {
-            int index = (int) (Math.random() * genome.size());
-            genome.set(index, (int) (Math.random() * 8));
-        }
-        return genome;
-    }
-
 
     /**
      * standard variant of move method for both map implementations
@@ -106,7 +48,7 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
      *                      found in map implementations
      */
     public void move(MoveValidator moveValidator) {
-        this.orientation = this.orientation.next(this.genome.get(geneActive++ % this.genome.size()));
+        this.orientation = this.orientation.next(this.genome.getGene());
         var newPosition = this.position.add(this.orientation.toUnitVector());
         try {
             if (moveValidator.canMoveTo(newPosition)) {
@@ -166,7 +108,7 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
         return children.stream().mapToInt(AbstractAnimal::getAllDescendantsNumber).sum() + getChildrenNumber();
     }
 
-    public List<Integer> getGenome() {
+    public Genome getGenome() {
         return genome;
     }
 

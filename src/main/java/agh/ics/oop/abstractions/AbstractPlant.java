@@ -1,6 +1,7 @@
-package agh.ics.oop.model;
+package agh.ics.oop.abstractions;
 
 import agh.ics.oop.interfaces.WorldElement;
+import agh.ics.oop.model.Vector2d;
 
 public abstract class AbstractPlant implements WorldElement {
     private final Vector2d position;

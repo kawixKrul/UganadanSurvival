@@ -1,7 +1,9 @@
-package agh.ics.oop.model;
+package agh.ics.oop.abstractions;
+
+import agh.ics.oop.model.AllAnimals;
+import agh.ics.oop.model.Vector2d;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 

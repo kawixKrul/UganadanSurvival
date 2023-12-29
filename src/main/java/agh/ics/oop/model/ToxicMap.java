@@ -1,9 +1,11 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.abstractions.AbstractMap;
+
 import java.util.Collections;
 import java.util.LinkedList;
 
-public class ToxicMap extends AbstractMap{
+public class ToxicMap extends AbstractMap {
     private final int squareStartX;
     private final int squareStartY;
     private final int squareEndX;
