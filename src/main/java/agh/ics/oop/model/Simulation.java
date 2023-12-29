@@ -7,7 +7,7 @@ import agh.ics.oop.interfaces.WorldMap;
 import java.util.UUID;
 
 public class Simulation implements Runnable {
-    private final AbstractMap map;
+    private final WorldMap map;
     private final AbstractAnimalFactory factory;
     private final UUID uuid;
     private final GenomePattern genomePattern;
@@ -37,5 +37,9 @@ public class Simulation implements Runnable {
     @Override
     public void run() {
         // TODO IMPLEMENT SIMULATION
+    }
+
+    public WorldMap getMap() {
+        return this.map;
     }
 }

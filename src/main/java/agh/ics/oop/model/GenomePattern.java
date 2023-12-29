@@ -33,7 +33,7 @@ public class GenomePattern implements AbstractFactory<Genome> {
                 .toList());
         Collections.shuffle(indexes);
         for (int idx : indexes.subList(0, mutations)) {
-            genome.setGene(idx, mutator.nextInt());
+            genome.setGene(idx, mutator.nextInt() % 8);
         }
         return genome;
     }

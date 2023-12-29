@@ -1,5 +1,6 @@
 package agh.ics.oop.abstractions;
 
+import agh.ics.oop.interfaces.WorldMap;
 import agh.ics.oop.model.AllAnimals;
 import agh.ics.oop.model.Vector2d;
 
@@ -7,7 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public abstract class AbstractMap {
+public abstract class AbstractMap implements WorldMap {
     public int width;
     public int height;
     public HashMap<Vector2d, AbstractPlant> grassSet = new HashMap<>();
