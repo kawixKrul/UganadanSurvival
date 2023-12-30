@@ -57,14 +57,14 @@ public class SimulationPresenter implements MapChangeListener {
         mapGrid.getRowConstraints().add(new RowConstraints(CEll_SIZE));
         mapGrid.getColumnConstraints().add(new ColumnConstraints(CEll_SIZE));
 
-        for (int i = 0, idx = 1; i < boundary.upperRight().getX(); i++, idx++) {
+        for (int i = boundary.lowerLeft().getX(), idx = 1; i <= boundary.upperRight().getX(); i++, idx++) {
             Label label = new Label(String.valueOf(i));
             GridPane.setHalignment(label, HPos.CENTER);
             mapGrid.add(label, idx, 0, 1, 1);
             mapGrid.getColumnConstraints().add(new ColumnConstraints(CEll_SIZE));
         }
 
-        for (int i = 0, idx = 1; i < boundary.lowerLeft().getY(); i--, idx++) {
+        for (int i = boundary.lowerLeft().getY(), idx = 1; i <= boundary.upperRight().getY(); i++, idx++) {
             Label label = new Label(String.valueOf(i));
             GridPane.setHalignment(label, HPos.CENTER);
             mapGrid.add(label, 0, idx, 1, 1);

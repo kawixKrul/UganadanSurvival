@@ -28,6 +28,8 @@ public class CSVFileWriter implements MapChangeListener {
             e.printStackTrace();
         }
     }
+
+    // TODO remember to close this file
     public void closeFile() throws IOException {
         this.csvFile.close();
     }
