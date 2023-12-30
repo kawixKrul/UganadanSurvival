@@ -1,6 +1,7 @@
 package agh.ics.oop.abstractions;
 
 import agh.ics.oop.interfaces.MapChangeListener;
+import agh.ics.oop.interfaces.WorldElement;
 import agh.ics.oop.interfaces.WorldMap;
 import agh.ics.oop.model.AllAnimals;
 import agh.ics.oop.model.Vector2d;
@@ -10,11 +11,15 @@ import java.util.*;
 public abstract class AbstractMap implements WorldMap {
     public int width;
     public int height;
+
     public HashMap<Vector2d, AbstractPlant> grassSet = new HashMap<>();
 
     public AllAnimals animals = new AllAnimals();
 
+    public ArrayList<WorldElement> allobjects = new ArrayList<WorldElement>();
     public int currentday = 0;
+
+
     private List<MapChangeListener> observers = new LinkedList<>();
 
 
@@ -30,6 +35,11 @@ public abstract class AbstractMap implements WorldMap {
         mapChanged("trawka");
     }
 
+    public void spawnMultipleGrass(int howMuch){
+        for(int i =0; i<howMuch;i++){
+            this.spawnGrass();
+        }
+    }
     public void addAnimal(AbstractAnimal animal){
         animals.addAnimal(animal);
         mapChanged("Bydle");
@@ -37,13 +47,15 @@ public abstract class AbstractMap implements WorldMap {
 
     public void removeAnimal(AbstractAnimal animal){
         animals.removeAnimal(animal);
+        mapChanged("Bydle nieżyje");
     }
     public void whichAreDead(){
         animals.checkIfAllAnimalsAlive(currentday);
     }
 
+
     public void moveAnimals(){
-        animals.moveAnimals();
+        animals.moveAnimals(this);
     }
 
     public void eatGrass() {
@@ -53,11 +65,21 @@ public abstract class AbstractMap implements WorldMap {
         {
             Map.Entry<Vector2d,AbstractPlant> next = it.next();
             if (animals.eatGrassAtPosition(next.getKey(), next.getValue()))
+                mapChanged("Bydle zjadłoTrawe");
                 it.remove();
         }
     }
 
+    @Override
+    public List<WorldElement> getElements() {
+        allobjects.clear();
+        animals.getAllAnimals().forEach(o -> allobjects.add((WorldElement) o));
+        grassSet.values().forEach(g -> allobjects.add((WorldElement) g));
+        return allobjects;
+    }
+
     public void breedAnimals(int energyToBreed) {
+        mapChanged("bydle się rucha");
         animals.breedAnimals(energyToBreed, this);
     }
 
@@ -76,7 +98,15 @@ public abstract class AbstractMap implements WorldMap {
 
     protected abstract boolean spawnGrassNonPreferred();
 
-
+    @Override
+    public void passDay(int energyToBreed,int plantGrowthPerDay) {
+        whichAreDead();
+        moveAnimals();
+        eatGrass();
+        breedAnimals(energyToBreed);
+        spawnMultipleGrass(plantGrowthPerDay);
+        currentday++;
+    }
     @Override
     public void mapChanged(String message) {
         observers.forEach(o -> o.mapChanged(this, message));

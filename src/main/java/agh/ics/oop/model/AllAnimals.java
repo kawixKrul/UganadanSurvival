@@ -13,10 +13,10 @@ import java.util.TreeSet;
 public class AllAnimals {
     public int animalCount = 0;
     public HashMap<Vector2d, TreeSet<AbstractAnimal>> animalsByPosition = new HashMap<>();
-    public LinkedList<AbstractAnimal> allAnimals = new LinkedList<>();
+    private LinkedList<AbstractAnimal> allAnimals = new LinkedList<>();
     public float averageTimeOfDeath = 0;
     public int deadAnimals = 0;
-    private MoveValidator moveValidator;
+
     public void addAnimal(AbstractAnimal animal) {
         animalsByPosition.computeIfAbsent(animal.getPosition(), k -> new TreeSet<>());
         animalsByPosition.get(animal.getPosition()).add(animal);
@@ -38,9 +38,33 @@ public class AllAnimals {
         } else return null;
 
     }
-    public void moveAnimals() {
-        allAnimals.forEach(a -> a.move(moveValidator));
+    public void moveAnimals(MoveValidator moveValidator) {
+        Vector2d oldPositon;
+        Vector2d newPositon;
+        for (AbstractAnimal a : allAnimals){
+            oldPositon = a.getPosition();
+            a.move(moveValidator);
+            newPositon= a.getPosition();
+            if(!newPositon.equals(oldPositon)){
+                positionChange(a,oldPositon,newPositon);
+            }
+        }
+
+
+//        allAnimals.forEach(a -> {
+//            oldPositon= a.getPosition();
+//            a.move(moveValidator);
+//        if(
+//
+//        )
+//        });
     }
+
+    public LinkedList getAllAnimals (){
+        return allAnimals;
+    }
+
+
     public void breedAnimals(int energyToBreed, AbstractMap map) {
         animalsByPosition.forEach((position, set) -> {
             if (set.size() >= 2) {
@@ -48,7 +72,7 @@ public class AllAnimals {
                 AbstractAnimal second = set.lower(first);
                 if (second != null && second.getEnergy() >= energyToBreed) {
                     // dodaj animala
-                    //map.addAnimal(first.procreate(second));
+                    //map.addAnimal(first.reproduce(second));
                 }
             }
         });
@@ -64,6 +88,11 @@ public class AllAnimals {
             }
         }
     }
+
+    public boolean isEmpty(){
+        return animalsByPosition.isEmpty();
+    }
+
     public boolean eatGrassAtPosition(Vector2d position, AbstractPlant energyGain) {
         TreeSet<AbstractAnimal> animals = animalsByPosition.get(position);
         if (animals != null && !animals.isEmpty()) {

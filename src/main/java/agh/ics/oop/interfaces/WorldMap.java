@@ -53,6 +53,10 @@ public interface WorldMap extends MoveValidator{
      */
     Boundary getCurrentBounds();
 
+    boolean isSimulationEnd();
+
+    void passDay(int energyToBreed,int fixedGrassSpawn);
+
     UUID getId();
 
     void mapChanged(String message);
