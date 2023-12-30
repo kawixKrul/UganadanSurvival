@@ -4,9 +4,14 @@ import agh.ics.oop.abstractions.AbstractAnimal;
 import agh.ics.oop.interfaces.MoveValidator;
 import javafx.scene.image.Image;
 
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 
 public class CrazyAnimal extends AbstractAnimal {
-    public static final String IMAGE_PATH = "src/main/resources/crazyAnimal.png";
+    public static final String IMAGE_PATH = "/crazyAnimal.jpg";
+    public static final Image IMAGE = new Image(IMAGE_PATH);
     public CrazyAnimal(Vector2d initialPosition, int initialEnergy, Genome genome) {
         super(initialPosition, initialEnergy, genome);
     }
@@ -19,6 +24,6 @@ public class CrazyAnimal extends AbstractAnimal {
 
     @Override
     public Image getClassImage() {
-        return new Image(IMAGE_PATH);
+        return IMAGE;
     }
 }

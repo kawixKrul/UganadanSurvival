@@ -3,10 +3,14 @@ package agh.ics.oop.model;
 import agh.ics.oop.abstractions.AbstractPlant;
 import javafx.scene.image.Image;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.io.IOException;
+import java.net.URL;
 
 public class ToxicPlant extends AbstractPlant {
-    public static final String IMAGE_PATH = "src/main/resources/toxic_plant.png";
+    public static final String IMAGE_PATH = "/toxicPlant.jpg";
+    public static final Image IMAGE = new Image(IMAGE_PATH);
 
     public ToxicPlant(Vector2d position, int energy) {
         super(position, (-1)*energy);
@@ -19,7 +23,7 @@ public class ToxicPlant extends AbstractPlant {
     }
 
     @Override
-    public Image getClassImage() {
-        return new Image(IMAGE_PATH);
+    public Image getClassImage(){
+        return IMAGE;
     }
 }

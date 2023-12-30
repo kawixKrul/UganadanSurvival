@@ -79,7 +79,7 @@ public abstract class AbstractMap implements WorldMap {
     }
 
     public void breedAnimals(int energyToBreed) {
-        mapChanged("bydle się rucha");
+        //mapChanged("bydle się rucha");
         animals.breedAnimals(energyToBreed, this);
     }
 
@@ -103,12 +103,17 @@ public abstract class AbstractMap implements WorldMap {
         whichAreDead();
         moveAnimals();
         eatGrass();
-        breedAnimals(energyToBreed);
+        //breedAnimals(energyToBreed);
         spawnMultipleGrass(plantGrowthPerDay);
         currentday++;
     }
     @Override
     public void mapChanged(String message) {
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         observers.forEach(o -> o.mapChanged(this, message));
     }
 
