@@ -7,7 +7,7 @@ import agh.ics.oop.model.Vector2d;
 import java.util.List;
 import java.util.UUID;
 
-public interface WorldMap {
+public interface WorldMap extends MoveValidator{
 
     /**
      * Place a animal on the map.
@@ -54,4 +54,8 @@ public interface WorldMap {
     Boundary getCurrentBounds();
 
     UUID getId();
+
+    void mapChanged(String message);
+
+    void addObserver(MapChangeListener observer);
 }

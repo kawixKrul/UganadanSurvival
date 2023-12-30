@@ -7,16 +7,20 @@ public class Genome {
     private final List<Integer> genes;
     private int activatedGene;
 
-    public Genome(List<Integer> genes) {
+    public Genome(List<Integer> genes, int activeGene) {
         this.genes = genes;
-        this.activatedGene = 0;
+        this.activatedGene = activeGene;
+    }
+
+    public Genome(List<Integer> genes) {
+        this(genes, 0);
     }
 
     /**
      * get current gene and move to the next
      * @return int - current gene
      */
-    public int getGene() {
+    public int getGeneAndMoveToNext() {
         return genes.get(activatedGene++ % genes.size());
     }
 

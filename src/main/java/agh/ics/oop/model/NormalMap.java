@@ -2,6 +2,8 @@ package agh.ics.oop.model;
 
 import agh.ics.oop.abstractions.AbstractAnimal;
 import agh.ics.oop.abstractions.AbstractMap;
+import agh.ics.oop.exceptions.MapBoundsReachedException;
+import agh.ics.oop.exceptions.ToxicPlantSpottedException;
 import agh.ics.oop.interfaces.WorldElement;
 
 import java.util.Collections;
@@ -77,7 +79,8 @@ public class NormalMap extends AbstractMap {
 
     @Override
     public void move(AbstractAnimal animal) {
-
+        addAnimal(animal);
+        mapChanged("Bydle ruszyło");
     }
 
     @Override
@@ -97,11 +100,16 @@ public class NormalMap extends AbstractMap {
 
     @Override
     public Boundary getCurrentBounds() {
-        return null;
+        return new Boundary(new Vector2d(0, 0), new Vector2d(32, 32));
     }
 
     @Override
     public UUID getId() {
         return null;
+    }
+
+    @Override
+    public boolean canMoveTo(Vector2d position) throws ToxicPlantSpottedException, MapBoundsReachedException {
+        return true;
     }
 }

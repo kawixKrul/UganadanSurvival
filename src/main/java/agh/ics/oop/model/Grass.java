@@ -11,12 +11,6 @@ public class Grass extends AbstractPlant {
         super(position, energy);
     }
 
-
-    @Override
-    public int getEnergy() {
-        return this.energy;
-    }
-
     @Override
     public String toString() {
         return "*";

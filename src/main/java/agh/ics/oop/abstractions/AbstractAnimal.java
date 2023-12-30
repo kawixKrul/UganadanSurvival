@@ -70,7 +70,7 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
      *                      found in map implementations
      */
     public void move(MoveValidator moveValidator) {
-        this.orientation = this.orientation.next(this.genome.getGene());
+        this.orientation = this.orientation.next(this.genome.getGeneAndMoveToNext());
         var newPosition = this.position.add(this.orientation.toUnitVector());
         try {
             if (moveValidator.canMoveTo(newPosition)) {

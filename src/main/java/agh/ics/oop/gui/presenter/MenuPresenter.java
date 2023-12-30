@@ -158,7 +158,6 @@ public class MenuPresenter {
             var simulation = new Simulation(
                     map,
                     factory,
-                    genomePattern,
                     Integer.parseInt(plantGrowthPerDay.getText()),
                     Integer.parseInt(breedingRequiredEnergy.getText()),
                     Integer.parseInt(breedingConsumptionEnergy.getText()),
@@ -172,7 +171,7 @@ public class MenuPresenter {
             BorderPane rootPane = loader.load();
 
             SimulationPresenter simulationPresenter = loader.getController();
-            simulationPresenter.setSimulation(simulation);
+            simulationPresenter.setWorldMap(map);
 
             configureSimulationScene(simulationStage, rootPane);
 
