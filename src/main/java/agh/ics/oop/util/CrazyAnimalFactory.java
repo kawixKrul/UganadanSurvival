@@ -4,6 +4,8 @@ import agh.ics.oop.abstractions.AbstractAnimal;
 import agh.ics.oop.abstractions.AbstractAnimalFactory;
 import agh.ics.oop.model.*;
 
+import java.util.List;
+
 
 public class CrazyAnimalFactory extends AbstractAnimalFactory {
     public CrazyAnimalFactory(int startEnergy, GenomePattern genomePattern, int breedingEnergy, Boundary boundary) {
@@ -16,7 +18,7 @@ public class CrazyAnimalFactory extends AbstractAnimalFactory {
     }
 
     @Override
-    public AbstractAnimal create(Vector2d parentPosition) {
-        return new CrazyAnimal(parentPosition, this.breedingEnergy*2, this.genomePattern.create());
+    public AbstractAnimal create(Vector2d parentPosition, List<Integer> genes) {
+        return new CrazyAnimal(parentPosition, this.breedingEnergy*2, this.genomePattern.create(genes));
     }
 }

@@ -5,6 +5,7 @@ import agh.ics.oop.model.Genome;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
@@ -27,8 +28,8 @@ public class GenomePattern implements AbstractFactory<Genome> {
     }
 
 
-    public Genome create(ArrayList<Integer> genome) {
-        return this.mutate(new Genome(genome));
+    public Genome create(List<Integer> genome) {
+        return this.mutate(new Genome(genome, (int) (Math.random() * genomeLength)));
     }
 
     private Genome mutate(Genome genome) {

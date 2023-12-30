@@ -5,7 +5,7 @@ import agh.ics.oop.model.Vector2d;
 
 public abstract class AbstractPlant implements WorldElement {
     private final Vector2d position;
-    protected final int energy;
+    private final int energy;
 
     public AbstractPlant(Vector2d position, int energy) {
         this.position = position;
@@ -17,5 +17,7 @@ public abstract class AbstractPlant implements WorldElement {
         return position;
     }
 
-    abstract public int getEnergy();
+    public int getEnergy() {
+        return energy;
+    };
 }

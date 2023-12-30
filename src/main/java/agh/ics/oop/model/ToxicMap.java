@@ -2,6 +2,8 @@ package agh.ics.oop.model;
 
 import agh.ics.oop.abstractions.AbstractAnimal;
 import agh.ics.oop.abstractions.AbstractMap;
+import agh.ics.oop.exceptions.MapBoundsReachedException;
+import agh.ics.oop.exceptions.ToxicPlantSpottedException;
 import agh.ics.oop.interfaces.WorldElement;
 
 import java.util.Collections;
@@ -137,5 +139,10 @@ public class ToxicMap extends AbstractMap {
     @Override
     public UUID getId() {
         return null;
+    }
+
+    @Override
+    public boolean canMoveTo(Vector2d position) throws ToxicPlantSpottedException, MapBoundsReachedException {
+        return true;
     }
 }

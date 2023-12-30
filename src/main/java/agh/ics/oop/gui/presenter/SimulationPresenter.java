@@ -4,7 +4,6 @@ import agh.ics.oop.interfaces.MapChangeListener;
 import agh.ics.oop.interfaces.WorldElement;
 import agh.ics.oop.interfaces.WorldMap;
 import agh.ics.oop.model.Boundary;
-import agh.ics.oop.model.Simulation;
 import agh.ics.oop.model.Vector2d;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -18,7 +17,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 
 public class SimulationPresenter implements MapChangeListener {
-    private Simulation simulation;
     private WorldMap map;
     private static final int CEll_SIZE = 20;
     @FXML
@@ -26,9 +24,9 @@ public class SimulationPresenter implements MapChangeListener {
     @FXML
     private Label descriptionLabel;
 
-    public void setSimulation(Simulation simulation) {
-        this.simulation = simulation;
-        this.map = simulation.getMap();
+    public void setWorldMap(WorldMap map) {
+        this.map = map;
+        this.map.addObserver(this);
     }
 
     @Override
@@ -41,8 +39,8 @@ public class SimulationPresenter implements MapChangeListener {
 
     public void drawMap() {
         clearGrid();
-
-    };
+        writeMap();
+    }
 
     public void clearGrid() {
         mapGrid.getChildren().retainAll(mapGrid.getChildren().get(0));
@@ -59,14 +57,14 @@ public class SimulationPresenter implements MapChangeListener {
         mapGrid.getRowConstraints().add(new RowConstraints(CEll_SIZE));
         mapGrid.getColumnConstraints().add(new ColumnConstraints(CEll_SIZE));
 
-        for (int i = 0, idx = 1; i < boundary.upperRight().getX(); i++, idx++) {
+        for (int i = boundary.lowerLeft().getX(), idx = 1; i <= boundary.upperRight().getX(); i++, idx++) {
             Label label = new Label(String.valueOf(i));
             GridPane.setHalignment(label, HPos.CENTER);
             mapGrid.add(label, idx, 0, 1, 1);
             mapGrid.getColumnConstraints().add(new ColumnConstraints(CEll_SIZE));
         }
 
-        for (int i = 0, idx = 1; i < boundary.lowerLeft().getY(); i--, idx++) {
+        for (int i = boundary.lowerLeft().getY(), idx = 1; i <= boundary.upperRight().getY(); i++, idx++) {
             Label label = new Label(String.valueOf(i));
             GridPane.setHalignment(label, HPos.CENTER);
             mapGrid.add(label, 0, idx, 1, 1);
@@ -81,9 +79,7 @@ public class SimulationPresenter implements MapChangeListener {
             imgView.setFitWidth(CEll_SIZE);
             Button button = new Button();
             button.setGraphic(imgView);
-            button.setOnAction(e -> {
-                descriptionLabel.setText(element.toString());
-            });
+            button.setOnAction(e -> descriptionLabel.setText(element.toString()));
             GridPane.setHalignment(button, HPos.CENTER);
             mapGrid.add(button,
                     position.getX() + 1,
@@ -92,5 +88,4 @@ public class SimulationPresenter implements MapChangeListener {
                     1);
         }
     }
-
 }

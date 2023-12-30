@@ -1,12 +1,11 @@
 package agh.ics.oop.abstractions;
 
+import agh.ics.oop.interfaces.MapChangeListener;
 import agh.ics.oop.interfaces.WorldMap;
 import agh.ics.oop.model.AllAnimals;
 import agh.ics.oop.model.Vector2d;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public abstract class AbstractMap implements WorldMap {
     public int width;
@@ -16,9 +15,10 @@ public abstract class AbstractMap implements WorldMap {
     public AllAnimals animals = new AllAnimals();
 
     public int currentday = 0;
+    private List<MapChangeListener> observers = new LinkedList<>();
 
 
-    private void spawnGrass() {
+    public void spawnGrass() {
         boolean grassSpawned;
         if (Math.random() < 0.8) {
             grassSpawned = spawnGrassPreferred();
@@ -27,10 +27,12 @@ public abstract class AbstractMap implements WorldMap {
             grassSpawned = spawnGrassNonPreferred();
             if (!grassSpawned) spawnGrassPreferred();
         }
+        mapChanged("trawka");
     }
 
     public void addAnimal(AbstractAnimal animal){
         animals.addAnimal(animal);
+        mapChanged("Bydle");
     }
 
     public void removeAnimal(AbstractAnimal animal){
@@ -73,4 +75,15 @@ public abstract class AbstractMap implements WorldMap {
     protected abstract boolean spawnGrassPreferred();
 
     protected abstract boolean spawnGrassNonPreferred();
+
+
+    @Override
+    public void mapChanged(String message) {
+        observers.forEach(o -> o.mapChanged(this, message));
+    }
+
+    @Override
+    public void addObserver(MapChangeListener observer) {
+        observers.add(observer);
+    }
 }

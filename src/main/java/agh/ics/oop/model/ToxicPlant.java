@@ -19,11 +19,6 @@ public class ToxicPlant extends AbstractPlant {
     }
 
     @Override
-    public int getEnergy() {
-        return energy;
-    }
-
-    @Override
     public Image getClassImage() {
         return new Image(IMAGE_PATH);
     }
