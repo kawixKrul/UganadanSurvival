@@ -161,7 +161,8 @@ public class MenuPresenter {
                 );
                 case 1 -> new NormalMap(
                         Integer.parseInt(mapWidth.getText()),
-                        Integer.parseInt(mapHeight.getText())
+                        Integer.parseInt(mapHeight.getText()),
+                        Integer.parseInt(breedingRequiredEnergy.getText())
                 );
                 default ->
                         throw new IllegalStateException("Unexpected value: " + (toxicPlantsEnabled.isSelected() ? 0 : 1));

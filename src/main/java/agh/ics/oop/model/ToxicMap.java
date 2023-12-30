@@ -137,6 +137,13 @@ public class ToxicMap extends AbstractMap {
     }
 
     @Override
+    public boolean isSimulationEnd() {
+        return false;
+    }
+
+
+
+    @Override
     public UUID getId() {
         return null;
     }

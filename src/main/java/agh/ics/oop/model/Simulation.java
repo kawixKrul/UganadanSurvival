@@ -38,13 +38,12 @@ public class Simulation implements Runnable {
 
     @Override
     public void run() {
-        for (WorldElement element: map.getElements()) {
-            if (element instanceof AbstractAnimal animal) {
-                animal.move(this.map);
+        while (true){
+            if( map.isSimulationEnd()){
+                break;
+            } else {
+                map.passDay(breedingEnergyRequired,plantGrowthPerDay);
             }
-        }
-        for (int i = 0; i < plantGrowthPerDay; ++i) {
-            continue;
         }
     }
 }

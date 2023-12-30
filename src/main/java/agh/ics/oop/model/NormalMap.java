@@ -4,6 +4,7 @@ import agh.ics.oop.abstractions.AbstractAnimal;
 import agh.ics.oop.abstractions.AbstractMap;
 import agh.ics.oop.exceptions.MapBoundsReachedException;
 import agh.ics.oop.exceptions.ToxicPlantSpottedException;
+import agh.ics.oop.interfaces.MoveValidator;
 import agh.ics.oop.interfaces.WorldElement;
 
 import java.util.Collections;
@@ -17,7 +18,7 @@ public class NormalMap extends AbstractMap {
     private final int equatorYMax;
     private final UUID id = new UUID(System.currentTimeMillis(), System.currentTimeMillis());
 
-    public NormalMap(int width, int height) {
+    public NormalMap(int width, int height, int energytobreed) {
         this.width = width;
         this.height = height;
         int halfEquatorHeight = (int) Math.floor(height / 10.0);
@@ -94,15 +95,20 @@ public class NormalMap extends AbstractMap {
         return null;
     }
 
-    @Override
-    public List<WorldElement> getElements() {
-        return null;
-    }
+
+
 
     @Override
     public Boundary getCurrentBounds() {
         return new Boundary(new Vector2d(0, 0), new Vector2d(32, 32));
     }
+
+    @Override
+    public boolean isSimulationEnd() {
+        return animals.isEmpty();
+    }
+
+
 
     @Override
     public UUID getId() {
