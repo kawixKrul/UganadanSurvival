@@ -5,10 +5,7 @@ import agh.ics.oop.abstractions.AbstractAnimalFactory;
 import agh.ics.oop.abstractions.AbstractMap;
 import agh.ics.oop.interfaces.WorldElement;
 import agh.ics.oop.interfaces.WorldMap;
-import agh.ics.oop.util.GenomePattern;
 
-import java.util.UUID;
-import java.util.stream.IntStream;
 
 public class Simulation implements Runnable {
     private final WorldMap map;
@@ -27,7 +24,6 @@ public class Simulation implements Runnable {
                       int startingAnimalNumber) {
         this.map = map;
         this.factory = factory;
-
         this.plantGrowthPerDay = plantGrowthPerDay;
         this.breedingEnergyRequired = breedingEnergyRequired;
         this.breedingEnergyConsumption = breedingEnergyConsumption;

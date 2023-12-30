@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
 
+
 public abstract class AbstractAnimal implements WorldElement, Comparable<AbstractAnimal> {
     private static final int REQUIRED_ENERGY_TO_MOVE = 5;
     private MapDirection orientation;
@@ -34,6 +35,14 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
         this.grassConsumed = 0;
     }
 
+
+    /**
+     * creates list of genes for new animal based on parents genes
+     * need to insert into factory of abstract animal to get gene mutations
+     * @param other
+     * @param energyConsumption energy consumed by each parents
+     * @return list of genes for new animal
+     */
     public List<Integer> reproduce(AbstractAnimal other, int energyConsumption) {
         var stronger = this.energy > other.energy ? this : other;
         var weaker = this.energy > other.energy ? other : this;
@@ -66,6 +75,7 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
 
     /**
      * standard variant of move method for both map implementations
+     * catches exceptions bound to certain map types and modifies move behaviour based on them
      * @param moveValidator move validator that checks if animal can move to the new position
      *                      found in map implementations
      */

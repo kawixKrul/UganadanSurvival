@@ -56,6 +56,11 @@ public class MenuPresenter {
     @FXML
     private Label errorLabel = new Label("ALL GUCCI");
 
+    /**
+     * Validates input from the user
+     * @throws WrongSimulationParameterValueException when conditions are not satisfied
+     */
+
     public void validateInput() throws WrongSimulationParameterValueException {
         if (mapWidth.getText().isEmpty() || mapHeight.getText().isEmpty() || startingPlantCount.getText().isEmpty() ||
                 plantEnergy.getText().isEmpty() || plantGrowthPerDay.getText().isEmpty() || startingAnimalCount.getText().isEmpty() ||
@@ -111,6 +116,11 @@ public class MenuPresenter {
         }
     }
 
+    /**
+     * initializes the simulation with parameters obtained from the user
+     * @param actionEvent in this case button click signalizing the start of the simulation
+     * @throws IOException
+     */
     public void startSimulation(ActionEvent actionEvent) throws IOException {
         try {
             errorLabel.setText("ALL GUCCI");

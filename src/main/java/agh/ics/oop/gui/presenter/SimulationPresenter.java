@@ -26,7 +26,6 @@ public class SimulationPresenter implements MapChangeListener {
 
     public void setWorldMap(WorldMap map) {
         this.map = map;
-        this.map.addObserver(this);
     }
 
     @Override

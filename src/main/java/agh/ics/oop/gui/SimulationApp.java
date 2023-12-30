@@ -22,8 +22,6 @@ public class SimulationApp extends Application {
         primaryStage.show();
     }
 
-
-
     private void configureMenuStage(Stage primaryStage, BorderPane rootPane) {
         primaryStage.setScene(new Scene(rootPane));
         primaryStage.setTitle("Ugandan Survival Menu");
