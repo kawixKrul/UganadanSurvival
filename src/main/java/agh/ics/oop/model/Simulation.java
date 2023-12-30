@@ -13,7 +13,6 @@ import java.util.stream.IntStream;
 public class Simulation implements Runnable {
     private final WorldMap map;
     private final AbstractAnimalFactory factory;
-    private final UUID uuid;
     private final int plantGrowthPerDay;
     private final int breedingEnergyRequired;
     private final int breedingEnergyConsumption;
@@ -28,7 +27,7 @@ public class Simulation implements Runnable {
                       int startingAnimalNumber) {
         this.map = map;
         this.factory = factory;
-        this.uuid = new UUID(System.currentTimeMillis(), System.currentTimeMillis());
+
         this.plantGrowthPerDay = plantGrowthPerDay;
         this.breedingEnergyRequired = breedingEnergyRequired;
         this.breedingEnergyConsumption = breedingEnergyConsumption;

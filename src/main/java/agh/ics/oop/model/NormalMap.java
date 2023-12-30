@@ -15,6 +15,7 @@ public class NormalMap extends AbstractMap {
 
     private final int equatorYMin;
     private final int equatorYMax;
+    private final UUID id = new UUID(System.currentTimeMillis(), System.currentTimeMillis());
 
     public NormalMap(int width, int height) {
         this.width = width;
@@ -105,7 +106,7 @@ public class NormalMap extends AbstractMap {
 
     @Override
     public UUID getId() {
-        return null;
+        return this.id;
     }
 
     @Override

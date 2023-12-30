@@ -2,6 +2,7 @@ package agh.ics.oop.gui.presenter;
 
 import agh.ics.oop.exceptions.WrongSimulationParameterValueException;
 import agh.ics.oop.model.*;
+import agh.ics.oop.util.CSVFileWriter;
 import agh.ics.oop.util.CrazyAnimalFactory;
 import agh.ics.oop.util.GenomePattern;
 import agh.ics.oop.util.RegularAnimalFactory;
@@ -155,15 +156,6 @@ public class MenuPresenter {
                 default ->
                         throw new IllegalStateException("Unexpected value: " + (toxicPlantsEnabled.isSelected() ? 0 : 1));
             };
-            var simulation = new Simulation(
-                    map,
-                    factory,
-                    Integer.parseInt(plantGrowthPerDay.getText()),
-                    Integer.parseInt(breedingRequiredEnergy.getText()),
-                    Integer.parseInt(breedingConsumptionEnergy.getText()),
-                    Integer.parseInt(startingPlantCount.getText()),
-                    Integer.parseInt(startingAnimalCount.getText())
-            );
 
             Stage simulationStage = new Stage();
             FXMLLoader loader = new FXMLLoader();
@@ -176,6 +168,22 @@ public class MenuPresenter {
             configureSimulationScene(simulationStage, rootPane);
 
             simulationStage.show();
+
+            map.addObserver(simulationPresenter);
+            if (saveToFileEnabled.isSelected()) {
+                map.addObserver(new CSVFileWriter(map.getId().toString()));
+            }
+
+            var simulation = new Simulation(
+                    map,
+                    factory,
+                    Integer.parseInt(plantGrowthPerDay.getText()),
+                    Integer.parseInt(breedingRequiredEnergy.getText()),
+                    Integer.parseInt(breedingConsumptionEnergy.getText()),
+                    Integer.parseInt(startingPlantCount.getText()),
+                    Integer.parseInt(startingAnimalCount.getText())
+            );
+
             executorService.submit(simulation);
 
         } catch (WrongSimulationParameterValueException e) {
