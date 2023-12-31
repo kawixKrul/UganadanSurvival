@@ -1,155 +1,37 @@
 package agh.ics.oop.model;
 
-import agh.ics.oop.abstractions.AbstractAnimal;
-import agh.ics.oop.abstractions.AbstractMap;
-import agh.ics.oop.exceptions.MapBoundsReachedException;
-import agh.ics.oop.exceptions.ToxicPlantSpottedException;
-import agh.ics.oop.interfaces.WorldElement;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import agh.ics.oop.abstractions.AbstractAnimalFactory;
+import agh.ics.oop.abstractions.AbstractWorldMap;
+import agh.ics.oop.enums.MapObstacle;
 
-public class ToxicMap extends AbstractMap {
-    private final int squareStartX;
-    private final int squareStartY;
-    private final int squareEndX;
-    private final int squareEndY;
+public class ToxicMap extends AbstractWorldMap {
 
-    private final int chanceOfContamination;
-    public ToxicMap(int width, int height,int squaresize,int chanceOfContamination) {
-        this.width = width;
-        this.height = height;
-        this.chanceOfContamination = chanceOfContamination;
-        if (squaresize <= width && squaresize <=height ){
-            this.squareStartY = (int) Math.floor(height /2.0) - (int) Math.floor(squaresize /2.0);
-            this.squareEndY = (int) Math.floor(height /2.0) + (int) Math.floor(squaresize /2.0);
-            this.squareStartX = (int) Math.floor(width /2.0) - (int) Math.floor(squaresize /2.0);
-            this.squareEndX = (int) Math.floor(width /2.0) + (int) Math.floor(squaresize /2.0);
-        }
-
-        else {
-            this.squareStartY = 0;
-            this.squareEndY = height;
-            this.squareStartX = 0;
-            this.squareEndX = width;
-        }
+    public ToxicMap(Boundary boundary,
+                    int plantEnergy,
+                    AbstractAnimalFactory animalFactory,
+                    int requiredEnergyToReproduce,
+                    int breedingConsumptionEnergy) {
+        super(boundary, plantEnergy, animalFactory, requiredEnergyToReproduce, breedingConsumptionEnergy);
     }
 
-
     @Override
-    protected boolean spawnGrassPreferred() {
-        LinkedList<Vector2d> spots = new LinkedList<>();
-        for (int i = squareStartX; i < squareEndX; i++) {
-            for (int j = squareStartY; j < squareEndY; j++) {
-                Vector2d newSpot = new Vector2d(i, j);
-                if (!grassSet.containsKey(newSpot)){
-                    spots.add(new Vector2d(i, j));
-                }
+    public MapObstacle canMoveTo(Vector2d position) {
+        if (super.canMoveTo(position) == MapObstacle.NONE) {
+            if (plants.containsKey(position)) {
+                return MapObstacle.TOXIC_PLANT;
+            }
+            if (position.precedes(boundary.upperRight()) && position.follows(boundary.upperRight())) {
+                return MapObstacle.NONE;
+            }
+            if (position.getX() == boundary.upperRight().getX() || position.getX() == boundary.lowerLeft().getX()) {
+                return MapObstacle.LEFT_RIGHT_BOUND;
+            }
+            if (position.getY() == boundary.upperRight().getY() || position.getY() == boundary.lowerLeft().getY()) {
+                return MapObstacle.TOP_BOTTOM_BOUND;
             }
         }
-        if (spots.size() > 0) {
-            Collections.shuffle(spots);
-            if (Math.random() < chanceOfContamination) {
-                grassSet.put(spots.get(0), new ToxicPlant(spots.get(0), 0));
-            }
-            else{
-                grassSet.put(spots.get(0), new Grass(spots.get(0), 0));
-            }
-
-            return true;
-        } else {
-            return false;
-        }
+        return super.canMoveTo(position);
     }
 
-
-
-    @Override
-    protected boolean spawnGrassNonPreferred() {
-        LinkedList<Vector2d> spots = new LinkedList<>();
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < squareStartY; j++) {
-                Vector2d newSpot = new Vector2d(i, j);
-                if (!grassSet.containsKey(newSpot)){
-                    spots.add(new Vector2d(i, j));
-                }
-            }
-            for (int j = squareEndY; j < height; j++) {
-                Vector2d newSpot = new Vector2d(i, j);
-                if (!grassSet.containsKey(newSpot)){
-                    spots.add(new Vector2d(i, j));
-                }
-            }
-        }
-        for (int j = squareStartY; j < squareEndY; j++) {
-            for (int i = 0; i < squareStartX; i++) {
-                Vector2d newSpot = new Vector2d(i, j);
-                if (!grassSet.containsKey(newSpot)){
-                    spots.add(new Vector2d(i, j));
-                }
-            }
-            for (int i = squareEndX; i < width; i++) {
-                Vector2d newSpot = new Vector2d(i, j);
-                if (!grassSet.containsKey(newSpot)){
-                    spots.add(new Vector2d(i, j));
-                }
-            }
-        }
-        if (spots.size() > 0) {
-            Collections.shuffle(spots);
-            grassSet.put(spots.get(0), new Grass(spots.get(0), 0));
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public void place(AbstractAnimal animal) {
-
-    }
-
-    @Override
-    public void move(AbstractAnimal animal) {
-
-    }
-
-    @Override
-    public boolean isOccupied(Vector2d position) {
-        return false;
-    }
-
-    @Override
-    public WorldElement objectAt(Vector2d position) {
-        return null;
-    }
-
-    @Override
-    public List<WorldElement> getElements() {
-        return null;
-    }
-
-    @Override
-    public Boundary getCurrentBounds() {
-        return null;
-    }
-
-    @Override
-    public boolean isSimulationEnd() {
-        return false;
-    }
-
-
-
-    @Override
-    public UUID getId() {
-        return null;
-    }
-
-    @Override
-    public boolean canMoveTo(Vector2d position) throws ToxicPlantSpottedException, MapBoundsReachedException {
-        return true;
-    }
 }

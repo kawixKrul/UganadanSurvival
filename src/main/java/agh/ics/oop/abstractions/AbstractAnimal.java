@@ -1,8 +1,6 @@
 package agh.ics.oop.abstractions;
 
 import agh.ics.oop.enums.MapDirection;
-import agh.ics.oop.exceptions.MapBoundsReachedException;
-import agh.ics.oop.exceptions.ToxicPlantSpottedException;
 import agh.ics.oop.interfaces.MoveValidator;
 import agh.ics.oop.interfaces.WorldElement;
 import agh.ics.oop.model.Genome;
@@ -33,6 +31,10 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
         this.children = new LinkedList<>();
         this.deathDay = -1;
         this.grassConsumed = 0;
+    }
+
+    public boolean canReproduce(AbstractAnimal other, int requiredEnergy) {
+        return this.energy >= requiredEnergy && other.energy >= requiredEnergy;
     }
 
 
@@ -80,23 +82,31 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
      *                      found in map implementations
      */
     public void move(MoveValidator moveValidator) {
-        this.orientation = this.orientation.next(this.genome.getGeneAndMoveToNext());
-        var newPosition = this.position.add(this.orientation.toUnitVector());
-        try {
-            if (moveValidator.canMoveTo(newPosition)) {
-                this.position = newPosition;
+        Vector2d predictedPosition = this.position.add(this.orientation
+                        .next(this.genome.getGeneAndMoveToNext())
+                        .toUnitVector()
+        );
+        switch (moveValidator.canMoveTo(predictedPosition)) {
+            case NONE -> {
+                this.position = predictedPosition;
+                this.energy -= REQUIRED_ENERGY_TO_MOVE;
             }
-        } catch (ToxicPlantSpottedException e) {
-            if (Math.random() > 0.2) {
-                this.position = newPosition;
-            } else {
-                this.position = this.position.add(this.orientation.toUnitVector().opposite());
+            case TOXIC_PLANT -> {
+                if (Math.random() < 0.2) {
+                    this.position = this.position.add(MapDirection.random().toUnitVector());
+                }
             }
-        } catch (MapBoundsReachedException e) {
-            this.orientation = this.orientation.next(4);
-        } finally {
-            this.energy -= REQUIRED_ENERGY_TO_MOVE;
-            age++;
+            case TOP_BOTTOM_BOUND -> {
+                this.orientation.next(4);
+            }
+            case LEFT_RIGHT_BOUND -> {
+                if (predictedPosition.getX() < 0) {
+                    this.position = new Vector2d(moveValidator.getCurrentBounds().upperRight().getX(), this.position.getY());
+                } else {
+                    this.position = new Vector2d(0, this.position.getY());
+                }
+            }
+            default -> throw new IllegalStateException("Unexpected value: " + moveValidator.canMoveTo(predictedPosition));
         }
     }
 
@@ -150,6 +160,14 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
 
     public int getAge() {
         return age;
+    }
+
+    public void incrementAge() {
+        this.age++;
+    }
+
+    public void addChild(AbstractAnimal child) {
+        this.children.add(child);
     }
 
     @Override

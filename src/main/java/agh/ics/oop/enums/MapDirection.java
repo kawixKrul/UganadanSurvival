@@ -41,4 +41,8 @@ public enum MapDirection {
     public MapDirection next(int rotation) {
         return MapDirection.values()[(rotation + this.ordinal()) % 8];
     }
+
+    public static MapDirection random() {
+        return MapDirection.values()[(int) (Math.random() * 8)];
+    }
 }

@@ -1,6 +1,7 @@
 package agh.ics.oop.gui.presenter;
 
 import agh.ics.oop.exceptions.WrongSimulationParameterValueException;
+import agh.ics.oop.abstractions.*;
 import agh.ics.oop.model.*;
 import agh.ics.oop.util.CSVFileWriter;
 import agh.ics.oop.util.CrazyAnimalFactory;
@@ -152,33 +153,36 @@ public class MenuPresenter {
             };
             var map = switch(toxicPlantsEnabled.isSelected() ? 0 : 1) {
                 case 0 -> new ToxicMap(
-                        Integer.parseInt(mapWidth.getText()),
-                        Integer.parseInt(mapHeight.getText()),
-                        // TODO zmienic w konstrukotrze toxicmap te wartosci
-                        // powinno przyjmowac boundary imo
-                        0,
-                        0
+                        boundary,
+                        Integer.parseInt(plantEnergy.getText()),
+                        factory,
+                        Integer.parseInt(breedingRequiredEnergy.getText()),
+                        Integer.parseInt(breedingConsumptionEnergy.getText())
                 );
-                case 1 -> new NormalMap(
-                        Integer.parseInt(mapWidth.getText()),
-                        Integer.parseInt(mapHeight.getText()),
-                        Integer.parseInt(breedingRequiredEnergy.getText())
+                case 1 -> new Globe(
+                        boundary,
+                        Integer.parseInt(plantEnergy.getText()),
+                        factory,
+                        Integer.parseInt(breedingRequiredEnergy.getText()),
+                        Integer.parseInt(breedingConsumptionEnergy.getText())
                 );
                 default ->
                         throw new IllegalStateException("Unexpected value: " + (toxicPlantsEnabled.isSelected() ? 0 : 1));
             };
 
-            Stage simulationStage = new Stage();
+            Stage simulationStage = new Stage() {
+                @Override
+                public void close() {
+                    super.close();
+                    //executorService.shutdownNow();
+                }
+            };
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
             BorderPane rootPane = loader.load();
 
             SimulationPresenter simulationPresenter = loader.getController();
             simulationPresenter.setWorldMap(map);
-
-            configureSimulationScene(simulationStage, rootPane);
-
-            simulationStage.show();
 
             map.addObserver(simulationPresenter);
             if (saveToFileEnabled.isSelected()) {
@@ -187,13 +191,14 @@ public class MenuPresenter {
 
             var simulation = new Simulation(
                     map,
-                    factory,
-                    Integer.parseInt(plantGrowthPerDay.getText()),
-                    Integer.parseInt(breedingRequiredEnergy.getText()),
-                    Integer.parseInt(breedingConsumptionEnergy.getText()),
                     Integer.parseInt(startingPlantCount.getText()),
-                    Integer.parseInt(startingAnimalCount.getText())
+                    Integer.parseInt(startingAnimalCount.getText()),
+                    Integer.parseInt(plantGrowthPerDay.getText())
             );
+
+            configureSimulationScene(simulationStage, rootPane);
+
+            simulationStage.show();
 
             executorService.submit(simulation);
 
