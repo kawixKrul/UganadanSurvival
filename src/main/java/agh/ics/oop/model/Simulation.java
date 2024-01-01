@@ -2,7 +2,6 @@ package agh.ics.oop.model;
 
 import agh.ics.oop.abstractions.AbstractAnimal;
 import agh.ics.oop.abstractions.AbstractWorldMap;
-import agh.ics.oop.interfaces.ChangeListener;
 import agh.ics.oop.interfaces.WorldMap;
 import agh.ics.oop.util.CSVFileWriter;
 
@@ -32,7 +31,6 @@ public class Simulation implements Runnable {
     public void run() {
         while (true) {
             activeAnimals.removeAll(map.removeDeadAnimals(day));
-            killTime();
             if (activeAnimals.isEmpty()) {
                 shutdown();
                 break;
@@ -40,17 +38,14 @@ public class Simulation implements Runnable {
             for (AbstractAnimal animal : activeAnimals) {
                 animal.move(map);
             }
-            killTime();
             map.consumePlants();
-            killTime();
             activeAnimals.addAll(map.procreateAllAnimals());
-            killTime();
             map.spawnPlants(plantGrowthPerDay);
-            killTime();
             activeAnimals.forEach(AbstractAnimal::incrementAge);
             day++;
             System.out.println("Day " + day);
             simulationChanged(this.toString());
+            suspendSimulation();
         }
     }
 
@@ -75,7 +70,7 @@ public class Simulation implements Runnable {
         this.observers.add(observer);
     }
 
-    public void killTime() {
+    public void suspendSimulation() {
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {

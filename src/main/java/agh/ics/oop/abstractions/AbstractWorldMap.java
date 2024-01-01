@@ -166,11 +166,13 @@ abstract public class AbstractWorldMap implements WorldMap {
     public List<AbstractAnimal> removeDeadAnimals(int day) {
         List<AbstractAnimal> deaths = new LinkedList<>();
         for (TreeSet<AbstractAnimal> set : animals.values()) {
-            synchronized (this) {
-                for (AbstractAnimal animal : set) {
+            if (!set.isEmpty()) {
+                Iterator<AbstractAnimal> iterator = set.iterator();
+                while (iterator.hasNext()) {
+                    AbstractAnimal animal = iterator.next();
                     if (!animal.checkIfAlive(day)) {
                         deaths.add(animal);
-                        set.remove(animal);
+                        iterator.remove();
                     }
                 }
             }
