@@ -15,6 +15,13 @@ public class Globe extends AbstractWorldMap {
     }
 
     @Override
+    public void spawnPlant() {
+        Vector2d position = Vector2d.getRandomVector2d(boundary);
+        plants.put(position, new Grass(position, plantEnergy));
+        mapChanged("Spawned Plant");
+    }
+
+    @Override
     public MapObstacle canMoveTo(Vector2d position) {
         if (position.getX() < boundary.lowerLeft().getX() || position.getX() > boundary.upperRight().getX()) {
             return MapObstacle.LEFT_RIGHT_BOUND;

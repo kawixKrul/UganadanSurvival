@@ -47,7 +47,7 @@ public class SimulationPresenter implements MapChangeListener {
         mapGrid.getRowConstraints().clear();
     }
 
-    public void writeMap() {
+    public synchronized void writeMap() {
         Boundary boundary = map.getCurrentBounds();
         Label main = new Label("Map");
         GridPane.setHalignment(main, HPos.CENTER);
@@ -85,6 +85,10 @@ public class SimulationPresenter implements MapChangeListener {
                     boundary.upperRight().getY()-position.getY() + 1,
                     1,
                     1);
+//            if (element.getClass().equals(map.objectAt(position).getClass())) {
+//
+//            }
+
         }
     }
 }

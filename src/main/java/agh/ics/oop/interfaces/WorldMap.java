@@ -54,8 +54,10 @@ public interface WorldMap extends MoveValidator {
 
     void addObserver(MapChangeListener observer);
     List<MapChangeListener> getObservers();
-    void procreateAllAnimals();
-    void removeDeadAnimals(int day);
+    List<AbstractAnimal> procreateAllAnimals();
+    List<AbstractAnimal> removeDeadAnimals(int day);
+    void removeDeadAnimalsByAnimal(List<AbstractAnimal> deadAnimals);
     void consumePlants();
     boolean isSimulationEnd();
+    List<AbstractAnimal> getAnimals();
 }

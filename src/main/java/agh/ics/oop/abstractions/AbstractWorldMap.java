@@ -11,17 +11,17 @@ import agh.ics.oop.model.Vector2d;
 import java.util.*;
 import java.util.stream.Stream;
 
-public class AbstractWorldMap implements WorldMap {
+abstract public class AbstractWorldMap implements WorldMap {
     protected final Boundary boundary;
-    private final int plantEnergy;
+    protected final int plantEnergy;
     private final AbstractAnimalFactory animalFactory;
     private final int requiredEnergyToReproduce;
     private final int breedingConsumptionEnergy;
     private final UUID id = UUID.randomUUID();
-    protected final HashMap<Vector2d, AbstractPlant> plants = new HashMap<>();
+    protected final Map<Vector2d, AbstractPlant> plants = Collections.synchronizedMap(new HashMap<>());
     private final List<MapChangeListener> observers = new LinkedList<>();
-    protected final HashMap<Vector2d, TreeSet<AbstractAnimal>> animals = new HashMap<>();
-    private final List<AbstractAnimal> deadAnimals = new LinkedList<>();
+    protected final Map<Vector2d, TreeSet<AbstractAnimal>> animals = Collections.synchronizedMap(new HashMap<>());
+    private final List<AbstractAnimal> deadAnimals = Collections.synchronizedList(new LinkedList<>());
 
     public AbstractWorldMap(Boundary boundary,
                             int plantEnergy,
@@ -39,25 +39,22 @@ public class AbstractWorldMap implements WorldMap {
         for (int i = 0; i < count; ++i) {
             spawnAnimal();
         }
+        mapChanged("Spawned " + count + " animals");
     }
 
     public void spawnPlants(int count) {
         for (int i = 0; i < count; ++i) {
             spawnPlant();
         }
+        mapChanged("Spawned " + count + " plants");
     }
 
     public void spawnAnimal() {
         AbstractAnimal animal = animalFactory.create();
         place(animal);
-        mapChanged("Spawned animal at position " + animal.getPosition());
     }
 
-    public void spawnPlant() {
-        Vector2d position = Vector2d.getRandomVector2d(boundary);
-        plants.put(position, new Grass(position, plantEnergy));
-        mapChanged("Spawned Plant");
-    }
+    public abstract void spawnPlant();
 
     @Override
     public void place(AbstractAnimal animal) {
@@ -81,11 +78,21 @@ public class AbstractWorldMap implements WorldMap {
 
     @Override
     public WorldElement objectAt(Vector2d position) {
-        WorldElement animal = animals.get(position).first();
-        if (animal != null) {
-            return animal;
+        var set = animals.get(position);
+        if (set != null && !set.isEmpty()) {
+            return set.first();
         }
         return plants.get(position);
+    }
+
+    public List<AbstractAnimal> getAnimals() {
+        return animals.values()
+                .stream()
+                .map(set -> set.stream().toList())
+                .reduce(new LinkedList<>(), (list1, list2) -> {
+                    list1.addAll(list2);
+                    return list1;
+                });
     }
 
     @Override
@@ -94,14 +101,9 @@ public class AbstractWorldMap implements WorldMap {
                 plants.values()
                     .stream()
                     .map(plant -> (WorldElement) plant),
-                animals.values()
-                        .stream()
-                        .map(set -> set.stream().toList())
-                        .reduce(new LinkedList<>(), (list1, list2) -> {
-                            list1.addAll(list2);
-                            return list1;
-                        }).stream()
-                        .map(animal -> (WorldElement) animal))
+                getAnimals()
+                    .stream()
+                    .map(animal -> (WorldElement) animal))
                 .toList();
     }
 
@@ -131,7 +133,8 @@ public class AbstractWorldMap implements WorldMap {
     }
 
     @Override
-    public void procreateAllAnimals() {
+    public List<AbstractAnimal> procreateAllAnimals() {
+        List<AbstractAnimal> children = new LinkedList<>();
         for (TreeSet<AbstractAnimal> set : animals.values()) {
             if (set.size() > 1) {
                 AbstractAnimal first = set.first();
@@ -140,20 +143,24 @@ public class AbstractWorldMap implements WorldMap {
                     if (first.canReproduce(second, requiredEnergyToReproduce)) {
                         AbstractAnimal child = animalFactory
                                 .create(first.getPosition(), first.reproduce(second, breedingConsumptionEnergy));
-                        place(child);
+                        children.add(child);
                         first.addChild(child);
                         second.addChild(child);
-                        mapChanged("Spawned animal at position " + child.getPosition());
                     }
                     first = set.higher(second);
                     second = set.higher(first);
                 }
             }
         }
+        for (AbstractAnimal child : children) {
+            place(child);
+        }
+        mapChanged("Spawned " + children.size() + " children");
+        return children;
     }
 
     @Override
-    public void removeDeadAnimals(int day) {
+    public List<AbstractAnimal> removeDeadAnimals(int day) {
         List<AbstractAnimal> deaths = new LinkedList<>();
         for (TreeSet<AbstractAnimal> set : animals.values()) {
             for (AbstractAnimal animal : set) {
@@ -165,8 +172,17 @@ public class AbstractWorldMap implements WorldMap {
         for (AbstractAnimal animal : deaths) {
             animals.get(animal.getPosition()).remove(animal);
             deadAnimals.add(animal);
-            mapChanged("Animal died at position " + animal.getPosition());
         }
+        mapChanged("Killed " + deaths.size() + " animals");
+        return deaths;
+    }
+
+    @Override
+    public void removeDeadAnimalsByAnimal(List<AbstractAnimal> deadAnimals) {
+        for (AbstractAnimal animal : deadAnimals) {
+            animals.get(animal.getPosition()).remove(animal);
+        }
+        mapChanged("Killed " + deadAnimals.size() + " animals");
     }
 
     @Override
@@ -181,6 +197,7 @@ public class AbstractWorldMap implements WorldMap {
                 }
             }
         }
+        mapChanged("Consumed plants");
     }
 
     @Override

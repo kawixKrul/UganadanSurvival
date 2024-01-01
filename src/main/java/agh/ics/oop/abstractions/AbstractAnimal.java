@@ -6,13 +6,18 @@ import agh.ics.oop.interfaces.WorldElement;
 import agh.ics.oop.model.Genome;
 import agh.ics.oop.model.Vector2d;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 
 public abstract class AbstractAnimal implements WorldElement, Comparable<AbstractAnimal> {
     private static final int REQUIRED_ENERGY_TO_MOVE = 5;
+    private static final AtomicInteger ID_CONSTRUCTOR = new AtomicInteger(0);
+    private final int id = ID_CONSTRUCTOR.getAndIncrement();
     private MapDirection orientation;
     private Vector2d position;
     protected final Genome genome;
@@ -134,7 +139,12 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
 
     @Override
     public int compareTo(AbstractAnimal other) {
-        return Integer.compare(this.energy, other.energy);
+        return Comparator.comparingInt(AbstractAnimal::getEnergy)
+                .thenComparingInt(AbstractAnimal::getAge)
+                .thenComparingInt(AbstractAnimal::getChildrenNumber)
+                .thenComparingInt(AbstractAnimal::getId)
+                .compare(this, other);
+
     }
 
     @Override
@@ -169,6 +179,11 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
     public void addChild(AbstractAnimal child) {
         this.children.add(child);
     }
+
+    public int getId() {
+        return id;
+    }
+
 
     @Override
     public String toString() {

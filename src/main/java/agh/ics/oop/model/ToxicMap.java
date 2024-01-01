@@ -16,6 +16,13 @@ public class ToxicMap extends AbstractWorldMap {
     }
 
     @Override
+    public void spawnPlant() {
+        Vector2d position = Vector2d.getRandomVector2d(boundary);
+        plants.put(position, new ToxicPlant(position, plantEnergy));
+        mapChanged("Spawned Toxic Plant");
+    }
+
+    @Override
     public MapObstacle canMoveTo(Vector2d position) {
         if (super.canMoveTo(position) == MapObstacle.NONE) {
             if (plants.containsKey(position)) {

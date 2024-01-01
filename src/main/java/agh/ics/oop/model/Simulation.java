@@ -6,11 +6,14 @@ import agh.ics.oop.interfaces.WorldMap;
 import agh.ics.oop.util.CSVFileWriter;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 
 public class Simulation implements Runnable {
     private final WorldMap map;
     private final int plantGrowthPerDay;
+    private final List<AbstractAnimal> activeAnimals = new LinkedList<>();
     private int day = 0;
 
 
@@ -19,32 +22,39 @@ public class Simulation implements Runnable {
         this.plantGrowthPerDay = plantGrowthPerDay;
         map.spawnAnimals(startingAnimalCount);
         map.spawnPlants(startingPlantCount);
+        activeAnimals.addAll(map.getElements()
+                .stream()
+                .filter(e -> e instanceof AbstractAnimal)
+                .map(e -> (AbstractAnimal) e)
+                .toList());
     }
 
 
     @Override
     public void run() {
         while (true) {
-            map.removeDeadAnimals(day);
-            if (map.isSimulationEnd()) {
+            // TODO fix dead animals
+            //for (AbstractAnimal animal : map.removeDeadAnimals(day)) {
+            //    activeAnimals.remove(animal);
+            //}
+            if (activeAnimals.isEmpty()) {
                 shutdown();
                 break;
             }
-            map.getElements()
-                    .stream()
-                    .filter(e -> e instanceof AbstractAnimal)
-                    .forEach(a -> {
-                        try {
-                            Thread.sleep(20);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        map.move((AbstractAnimal) a);
-                    });
+            for (AbstractAnimal animal : activeAnimals) {
+                animal.move(map);
+            }
             map.consumePlants();
-            //map.procreateAllAnimals();
+            // TODO fix procreation
+            //activeAnimals.addAll(map.procreateAllAnimals());
             map.spawnPlants(plantGrowthPerDay);
+            activeAnimals.forEach(AbstractAnimal::incrementAge);
             day++;
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
