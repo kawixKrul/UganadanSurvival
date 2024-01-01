@@ -5,15 +5,15 @@ import java.util.List;
 import java.util.Random;
 
 public class Genome {
-    private final List<Integer> genes = new ArrayList<>();
+    private final List<Integer> genes;
     private int activatedGene;
 
-    public Genome(List<Integer> genes, int activeGene) {
-        genes.forEach(g -> this.genes.add(Math.abs(g % 8)));
+    public Genome(ArrayList<Integer> genes, int activeGene) {
+        this.genes = genes;
         this.activatedGene = activeGene;
     }
 
-    public Genome(List<Integer> genes) {
+    public Genome(ArrayList<Integer> genes) {
         this(genes, 0);
     }
 

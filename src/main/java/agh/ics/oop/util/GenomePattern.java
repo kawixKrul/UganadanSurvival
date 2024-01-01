@@ -22,13 +22,13 @@ public class GenomePattern implements AbstractFactory<Genome> {
 
     @Override
     public Genome create() {
-        return new Genome(IntStream.range(0, genomeLength)
+        return new Genome(new ArrayList<>( IntStream.range(0, genomeLength)
                 .mapToObj(i -> (int) (Math.random() * 8))
-                .toList());
+                .toList()));
     }
 
 
-    public Genome create(List<Integer> genome) {
+    public Genome create(ArrayList<Integer> genome) {
         return this.mutate(new Genome(genome, (int) (Math.random() * genomeLength)));
     }
 
