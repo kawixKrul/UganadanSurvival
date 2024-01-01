@@ -82,7 +82,7 @@ public class SimulationPresenter implements MapChangeListener {
             GridPane.setHalignment(button, HPos.CENTER);
             mapGrid.add(button,
                     position.getX() + 1,
-                    boundary.upperRight().getY()-position.getY() + 1,
+                    position.getY() + 1,
                     1,
                     1);
 //            if (element.getClass().equals(map.objectAt(position).getClass())) {

@@ -30,9 +30,7 @@ public class Simulation implements Runnable {
     public void run() {
         while (true) {
             // TODO fix dead animals
-            //for (AbstractAnimal animal : map.removeDeadAnimals(day)) {
-            //    activeAnimals.remove(animal);
-            //}
+            activeAnimals.removeAll(map.removeDeadAnimals(day));
             if (activeAnimals.isEmpty()) {
                 shutdown();
                 break;
@@ -42,7 +40,7 @@ public class Simulation implements Runnable {
             }
             map.consumePlants();
             // TODO fix procreation
-            //activeAnimals.addAll(map.procreateAllAnimals());
+            activeAnimals.addAll(map.procreateAllAnimals());
             map.spawnPlants(plantGrowthPerDay);
             activeAnimals.forEach(AbstractAnimal::incrementAge);
             day++;

@@ -1,8 +1,6 @@
 package agh.ics.oop.interfaces;
 
 import agh.ics.oop.enums.MapObstacle;
-import agh.ics.oop.exceptions.MapBoundsReachedException;
-import agh.ics.oop.exceptions.ToxicPlantSpottedException;
 import agh.ics.oop.model.Boundary;
 import agh.ics.oop.model.Vector2d;
 

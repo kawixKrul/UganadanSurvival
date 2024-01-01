@@ -5,7 +5,6 @@ import agh.ics.oop.interfaces.MapChangeListener;
 import agh.ics.oop.interfaces.WorldElement;
 import agh.ics.oop.interfaces.WorldMap;
 import agh.ics.oop.model.Boundary;
-import agh.ics.oop.model.Grass;
 import agh.ics.oop.model.Vector2d;
 
 import java.util.*;
@@ -21,7 +20,7 @@ abstract public class AbstractWorldMap implements WorldMap {
     protected final Map<Vector2d, AbstractPlant> plants = Collections.synchronizedMap(new HashMap<>());
     private final List<MapChangeListener> observers = new LinkedList<>();
     protected final Map<Vector2d, TreeSet<AbstractAnimal>> animals = Collections.synchronizedMap(new HashMap<>());
-    private final List<AbstractAnimal> deadAnimals = Collections.synchronizedList(new LinkedList<>());
+
 
     public AbstractWorldMap(Boundary boundary,
                             int plantEnergy,
@@ -149,6 +148,9 @@ abstract public class AbstractWorldMap implements WorldMap {
                         second.addChild(child);
                     }
                     first = set.higher(second);
+                    if (first == null) {
+                        break;
+                    }
                     second = set.higher(first);
                 }
             }
@@ -167,12 +169,9 @@ abstract public class AbstractWorldMap implements WorldMap {
             for (AbstractAnimal animal : set) {
                 if (!animal.checkIfAlive(day)) {
                     deaths.add(animal);
+                    set.remove(animal);
                 }
             }
-        }
-        for (AbstractAnimal animal : deaths) {
-            animals.get(animal.getPosition()).remove(animal);
-            deadAnimals.add(animal);
         }
         mapChanged("Killed " + deaths.size() + " animals");
         return deaths;

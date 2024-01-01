@@ -2,6 +2,8 @@ package agh.ics.oop.enums;
 
 import agh.ics.oop.model.Vector2d;
 
+import java.util.Random;
+
 public enum MapDirection {
     NORTH,
     NORTHEAST,
@@ -39,10 +41,10 @@ public enum MapDirection {
     }
 
     public MapDirection next(int rotation) {
-        return MapDirection.values()[(rotation + this.ordinal()) % 8];
+        return MapDirection.values()[Math.abs((rotation + this.ordinal()) % 8)];
     }
 
     public static MapDirection random() {
-        return MapDirection.values()[(int) (Math.random() * 8)];
+        return MapDirection.values()[new Random().nextInt(8)];
     }
 }

@@ -1,14 +1,15 @@
 package agh.ics.oop.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class Genome {
-    private final List<Integer> genes;
+    private final List<Integer> genes = new ArrayList<>();
     private int activatedGene;
 
     public Genome(List<Integer> genes, int activeGene) {
-        this.genes = genes;
+        genes.forEach(g -> this.genes.add(Math.abs(g % 8)));
         this.activatedGene = activeGene;
     }
 

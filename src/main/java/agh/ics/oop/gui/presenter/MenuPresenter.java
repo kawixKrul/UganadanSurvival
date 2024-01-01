@@ -1,7 +1,6 @@
 package agh.ics.oop.gui.presenter;
 
 import agh.ics.oop.exceptions.WrongSimulationParameterValueException;
-import agh.ics.oop.abstractions.*;
 import agh.ics.oop.model.*;
 import agh.ics.oop.util.CSVFileWriter;
 import agh.ics.oop.util.CrazyAnimalFactory;
@@ -63,10 +62,18 @@ public class MenuPresenter {
      */
 
     public void validateInput() throws WrongSimulationParameterValueException {
-        if (mapWidth.getText().isEmpty() || mapHeight.getText().isEmpty() || startingPlantCount.getText().isEmpty() ||
-                plantEnergy.getText().isEmpty() || plantGrowthPerDay.getText().isEmpty() || startingAnimalCount.getText().isEmpty() ||
-                startingAnimalEnergy.getText().isEmpty() || breedingRequiredEnergy.getText().isEmpty() || breedingConsumptionEnergy.getText().isEmpty() ||
-                minimumMutationNumber.getText().isEmpty() || maximumMutationNumber.getText().isEmpty() || genomeLength.getText().isEmpty()) {
+        if (mapWidth.getText().isEmpty()
+                || mapHeight.getText().isEmpty()
+                || startingPlantCount.getText().isEmpty()
+                || plantEnergy.getText().isEmpty()
+                || plantGrowthPerDay.getText().isEmpty()
+                || startingAnimalCount.getText().isEmpty()
+                || startingAnimalEnergy.getText().isEmpty()
+                || breedingRequiredEnergy.getText().isEmpty()
+                || breedingConsumptionEnergy.getText().isEmpty()
+                || minimumMutationNumber.getText().isEmpty()
+                || maximumMutationNumber.getText().isEmpty()
+                || genomeLength.getText().isEmpty()) {
             throw new WrongSimulationParameterValueException("All fields must be filled");
         }
         try {
@@ -200,7 +207,7 @@ public class MenuPresenter {
 
             simulationStage.show();
 
-            executorService.submit(simulation);
+            executorService.execute(simulation);
 
         } catch (WrongSimulationParameterValueException e) {
             errorLabel.setText(e.getMessage());

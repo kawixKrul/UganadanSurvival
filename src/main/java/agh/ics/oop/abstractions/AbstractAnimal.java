@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 
 public abstract class AbstractAnimal implements WorldElement, Comparable<AbstractAnimal> {
-    private static final int REQUIRED_ENERGY_TO_MOVE = 5;
+    private static final int REQUIRED_ENERGY_TO_MOVE = 10;
     private static final AtomicInteger ID_CONSTRUCTOR = new AtomicInteger(0);
     private final int id = ID_CONSTRUCTOR.getAndIncrement();
     private MapDirection orientation = MapDirection.random();
@@ -49,9 +49,9 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
         var weaker = this.energy > other.energy ? other : this;
         var dominant = Math.random() > 0.5;
         int distribution = stronger.energy / (stronger.energy + weaker.energy)*genome.getGenomeLength();
+        stronger.energy -= energyConsumption;
+        weaker.energy -= energyConsumption;
         if (dominant) {
-            stronger.energy -= energyConsumption;
-            weaker.energy -= energyConsumption;
             return Stream.concat(
                     stronger.genome.getGenes()
                             .subList(0, distribution)
@@ -61,8 +61,6 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
                             .stream()
             ).toList();
         } else {
-            stronger.energy -= energyConsumption;
-            weaker.energy -= energyConsumption;
             return Stream.concat(
                     weaker.genome.getGenes()
                             .subList(0, genome.getGenomeLength() - distribution)
