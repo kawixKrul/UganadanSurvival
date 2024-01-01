@@ -33,7 +33,7 @@ public class Genome {
      */
     public void aBitOfCraziness() {
         if (Math.random() < 0.2) {
-            this.activatedGene = new Random().nextInt() % genes.size();
+            this.activatedGene = new Random().nextInt(genes.size());
         }
     }
 

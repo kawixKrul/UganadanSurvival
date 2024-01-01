@@ -20,7 +20,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MenuPresenter {
-    private static final int THREAD_POOL_SIZE = 4;
+    private static final int THREAD_POOL_SIZE = 8;
     private static final ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
     @FXML
     public Button startButton;

@@ -22,11 +22,7 @@ public class Simulation implements Runnable {
         this.plantGrowthPerDay = plantGrowthPerDay;
         map.spawnAnimals(startingAnimalCount);
         map.spawnPlants(startingPlantCount);
-        activeAnimals.addAll(map.getElements()
-                .stream()
-                .filter(e -> e instanceof AbstractAnimal)
-                .map(e -> (AbstractAnimal) e)
-                .toList());
+        activeAnimals.addAll(map.getAnimals());
     }
 
 
@@ -55,6 +51,7 @@ public class Simulation implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            System.out.println("Day " + day);
         }
     }
 

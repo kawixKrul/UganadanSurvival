@@ -35,6 +35,7 @@ abstract public class AbstractWorldMap implements WorldMap {
         this.breedingConsumptionEnergy = breedingConsumptionEnergy;
     }
 
+
     public void spawnAnimals(int count) {
         for (int i = 0; i < count; ++i) {
             spawnAnimal();
@@ -205,7 +206,14 @@ abstract public class AbstractWorldMap implements WorldMap {
         return animals.values().stream().allMatch(TreeSet::isEmpty);
     }
 
+    @Override
     public MapObstacle canMoveTo(Vector2d position) {
-        return null;
+        if (position.getX() < boundary.lowerLeft().getX() || position.getX() > boundary.upperRight().getX()) {
+            return MapObstacle.LEFT_RIGHT_BOUND;
+        }
+        if (position.getY() < boundary.lowerLeft().getY() || position.getY() > boundary.upperRight().getY()) {
+            return MapObstacle.TOP_BOTTOM_BOUND;
+        }
+        return MapObstacle.NONE;
     }
 }

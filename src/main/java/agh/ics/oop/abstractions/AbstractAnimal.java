@@ -9,7 +9,6 @@ import agh.ics.oop.model.Vector2d;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
@@ -18,24 +17,19 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
     private static final int REQUIRED_ENERGY_TO_MOVE = 5;
     private static final AtomicInteger ID_CONSTRUCTOR = new AtomicInteger(0);
     private final int id = ID_CONSTRUCTOR.getAndIncrement();
-    private MapDirection orientation;
+    private MapDirection orientation = MapDirection.random();
     private Vector2d position;
     protected final Genome genome;
     private int energy;
-    private int age;
-    private final List<AbstractAnimal> children;
-    private int deathDay;
-    private int grassConsumed;
+    private int age = 0;
+    private final List<AbstractAnimal> children = new LinkedList<>();
+    private int deathDay = -1;
+    private int grassConsumed = 0;
 
     public AbstractAnimal(Vector2d initialPosition, int initialEnergy, Genome genome) {
         this.genome = genome;
         this.position = initialPosition;
-        this.orientation = MapDirection.NORTH;
         this.energy = initialEnergy;
-        this.age = 0;
-        this.children = new LinkedList<>();
-        this.deathDay = -1;
-        this.grassConsumed = 0;
     }
 
     public boolean canReproduce(AbstractAnimal other, int requiredEnergy) {
@@ -87,10 +81,8 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
      *                      found in map implementations
      */
     public void move(MoveValidator moveValidator) {
-        Vector2d predictedPosition = this.position.add(this.orientation
-                        .next(this.genome.getGeneAndMoveToNext())
-                        .toUnitVector()
-        );
+        this.orientation = this.orientation.next(this.genome.getGeneAndMoveToNext());
+        Vector2d predictedPosition = this.position.add(this.orientation.toUnitVector());
         switch (moveValidator.canMoveTo(predictedPosition)) {
             case NONE -> {
                 this.position = predictedPosition;
@@ -183,7 +175,6 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
     public int getId() {
         return id;
     }
-
 
     @Override
     public String toString() {
