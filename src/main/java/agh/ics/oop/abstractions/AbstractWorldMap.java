@@ -178,14 +178,6 @@ abstract public class AbstractWorldMap implements WorldMap {
     }
 
     @Override
-    public void removeDeadAnimalsByAnimal(List<AbstractAnimal> deadAnimals) {
-        for (AbstractAnimal animal : deadAnimals) {
-            animals.get(animal.getPosition()).remove(animal);
-        }
-        mapChanged("Killed " + deadAnimals.size() + " animals");
-    }
-
-    @Override
     public void consumePlants() {
         for (TreeSet<AbstractAnimal> set : animals.values()) {
             if (!set.isEmpty()) {
@@ -198,11 +190,6 @@ abstract public class AbstractWorldMap implements WorldMap {
             }
         }
         mapChanged("Consumed plants");
-    }
-
-    @Override
-    public boolean isSimulationEnd() {
-        return animals.values().stream().allMatch(TreeSet::isEmpty);
     }
 
     @Override

@@ -1,12 +1,12 @@
 package agh.ics.oop.gui.presenter;
 
+import agh.ics.oop.abstractions.AbstractWorldMap;
 import agh.ics.oop.exceptions.WrongSimulationParameterValueException;
 import agh.ics.oop.model.*;
 import agh.ics.oop.util.CSVFileWriter;
 import agh.ics.oop.util.CrazyAnimalFactory;
 import agh.ics.oop.util.GenomePattern;
 import agh.ics.oop.util.RegularAnimalFactory;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -126,10 +126,9 @@ public class MenuPresenter {
 
     /**
      * initializes the simulation with parameters obtained from the user
-     * @param actionEvent in this case button click signalizing the start of the simulation
-     * @throws IOException
+     * @throws IOException should not happen
      */
-    public void startSimulation(ActionEvent actionEvent) throws IOException {
+    public void startSimulation() throws IOException {
         try {
             errorLabel.setText("ALL GUCCI");
             validateInput();
@@ -139,43 +138,7 @@ public class MenuPresenter {
                     Integer.parseInt(maximumMutationNumber.getText()),
                     Integer.parseInt(genomeLength.getText())
             );
-            var boundary = new Boundary(
-                    new Vector2d(0, 0),
-                    new Vector2d(Integer.parseInt(mapWidth.getText()), Integer.parseInt(mapHeight.getText())));
-            var factory = switch(crazyAnimalEnabled.isSelected() ? 0 : 1) {
-                case 0 -> new CrazyAnimalFactory(
-                        Integer.parseInt(startingAnimalEnergy.getText()),
-                        genomePattern,
-                        Integer.parseInt(breedingConsumptionEnergy.getText()),
-                        boundary
-                );
-                case 1 -> new RegularAnimalFactory(
-                        Integer.parseInt(startingAnimalEnergy.getText()),
-                        genomePattern,
-                        Integer.parseInt(breedingConsumptionEnergy.getText()),
-                        boundary
-                );
-                default ->
-                        throw new IllegalStateException("Unexpected value: " + (crazyAnimalEnabled.isSelected() ? 0 : 1));
-            };
-            var map = switch(toxicPlantsEnabled.isSelected() ? 0 : 1) {
-                case 0 -> new ToxicMap(
-                        boundary,
-                        Integer.parseInt(plantEnergy.getText()),
-                        factory,
-                        Integer.parseInt(breedingRequiredEnergy.getText()),
-                        Integer.parseInt(breedingConsumptionEnergy.getText())
-                );
-                case 1 -> new Globe(
-                        boundary,
-                        Integer.parseInt(plantEnergy.getText()),
-                        factory,
-                        Integer.parseInt(breedingRequiredEnergy.getText()),
-                        Integer.parseInt(breedingConsumptionEnergy.getText())
-                );
-                default ->
-                        throw new IllegalStateException("Unexpected value: " + (toxicPlantsEnabled.isSelected() ? 0 : 1));
-            };
+            var map = prepareWorldMap(genomePattern);
 
             Stage simulationStage = new Stage() {
                 @Override
@@ -212,6 +175,46 @@ public class MenuPresenter {
         } catch (WrongSimulationParameterValueException e) {
             errorLabel.setText(e.getMessage());
         }
+    }
+
+    private AbstractWorldMap prepareWorldMap(GenomePattern genomePattern) {
+        var boundary = new Boundary(
+                new Vector2d(0, 0),
+                new Vector2d(Integer.parseInt(mapWidth.getText()), Integer.parseInt(mapHeight.getText())));
+        var factory = switch(crazyAnimalEnabled.isSelected() ? 0 : 1) {
+            case 0 -> new CrazyAnimalFactory(
+                    Integer.parseInt(startingAnimalEnergy.getText()),
+                    genomePattern,
+                    Integer.parseInt(breedingConsumptionEnergy.getText()),
+                    boundary
+            );
+            case 1 -> new RegularAnimalFactory(
+                    Integer.parseInt(startingAnimalEnergy.getText()),
+                    genomePattern,
+                    Integer.parseInt(breedingConsumptionEnergy.getText()),
+                    boundary
+            );
+            default ->
+                    throw new IllegalStateException("Unexpected value: " + (crazyAnimalEnabled.isSelected() ? 0 : 1));
+        };
+        return switch(toxicPlantsEnabled.isSelected() ? 0 : 1) {
+            case 0 -> new ToxicMap(
+                    boundary,
+                    Integer.parseInt(plantEnergy.getText()),
+                    factory,
+                    Integer.parseInt(breedingRequiredEnergy.getText()),
+                    Integer.parseInt(breedingConsumptionEnergy.getText())
+            );
+            case 1 -> new Globe(
+                    boundary,
+                    Integer.parseInt(plantEnergy.getText()),
+                    factory,
+                    Integer.parseInt(breedingRequiredEnergy.getText()),
+                    Integer.parseInt(breedingConsumptionEnergy.getText())
+            );
+            default ->
+                    throw new IllegalStateException("Unexpected value: " + (toxicPlantsEnabled.isSelected() ? 0 : 1));
+        };
     }
 
     private void configureSimulationScene(Stage simulationStage, BorderPane rootPane) {

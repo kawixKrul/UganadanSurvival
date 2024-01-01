@@ -4,11 +4,6 @@ import agh.ics.oop.abstractions.AbstractAnimal;
 import agh.ics.oop.interfaces.MoveValidator;
 import javafx.scene.image.Image;
 
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-
 public class CrazyAnimal extends AbstractAnimal {
     public static final String IMAGE_PATH = "/crazyAnimal.jpg";
     public static final Image IMAGE = new Image(IMAGE_PATH);

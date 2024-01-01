@@ -3,6 +3,7 @@ package agh.ics.oop.model;
 import java.util.Objects;
 import java.util.Random;
 
+@SuppressWarnings("ALL")
 public class Vector2d {
     private final int x;
     private final int y;

@@ -25,7 +25,7 @@ public class CSVFileWriter implements MapChangeListener {
         try {
             this.csvFile.write(message);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 

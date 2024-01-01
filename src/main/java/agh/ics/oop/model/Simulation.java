@@ -29,7 +29,6 @@ public class Simulation implements Runnable {
     @Override
     public void run() {
         while (true) {
-            // TODO fix dead animals
             activeAnimals.removeAll(map.removeDeadAnimals(day));
             if (activeAnimals.isEmpty()) {
                 shutdown();
@@ -39,7 +38,6 @@ public class Simulation implements Runnable {
                 animal.move(map);
             }
             map.consumePlants();
-            // TODO fix procreation
             activeAnimals.addAll(map.procreateAllAnimals());
             map.spawnPlants(plantGrowthPerDay);
             activeAnimals.forEach(AbstractAnimal::incrementAge);
@@ -47,7 +45,7 @@ public class Simulation implements Runnable {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                System.out.println(e.getMessage());
             }
             System.out.println("Day " + day);
         }
@@ -61,7 +59,7 @@ public class Simulation implements Runnable {
                     try {
                         ((CSVFileWriter) o).closeFile();}
                     catch (IOException e) {
-                        e.printStackTrace();
+                        System.out.println(e.getMessage());
                         System.out.println("Failed to close file");
                     }});
         System.out.println("Simulation ended after " + day + " days");

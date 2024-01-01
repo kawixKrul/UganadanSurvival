@@ -6,19 +6,15 @@ import agh.ics.oop.model.Vector2d;
 import java.util.List;
 import java.util.UUID;
 
+@SuppressWarnings("unused")
 public interface WorldMap extends MoveValidator {
 
     /**
-     * Place a animal on the map.
+     * Place an animal on the map.
      *
      * @param animal The animal to place on the map.
      */
     void place(AbstractAnimal animal);
-
-    /**
-     * Moves an animal (if it is present on the map) according to specified direction.
-     * If the move is not possible, this method has no effect.
-     */
     void move(AbstractAnimal animal);
 
     /**
@@ -53,11 +49,14 @@ public interface WorldMap extends MoveValidator {
     void mapChanged(String message);
 
     void addObserver(MapChangeListener observer);
+
     List<MapChangeListener> getObservers();
+
     List<AbstractAnimal> procreateAllAnimals();
+
     List<AbstractAnimal> removeDeadAnimals(int day);
-    void removeDeadAnimalsByAnimal(List<AbstractAnimal> deadAnimals);
+
     void consumePlants();
-    boolean isSimulationEnd();
+
     List<AbstractAnimal> getAnimals();
 }

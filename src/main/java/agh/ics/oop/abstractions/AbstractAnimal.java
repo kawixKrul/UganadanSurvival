@@ -40,7 +40,7 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
     /**
      * creates list of genes for new animal based on parents genes
      * need to insert into factory of abstract animal to get gene mutations
-     * @param other
+     * @param other the other parent
      * @param energyConsumption energy consumed by each parents
      * @return list of genes for new animal
      */
@@ -91,9 +91,7 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
                     this.position = this.position.add(MapDirection.random().toUnitVector());
                 }
             }
-            case TOP_BOTTOM_BOUND -> {
-                this.orientation.next(4);
-            }
+            case TOP_BOTTOM_BOUND -> this.orientation.next(4);
             case LEFT_RIGHT_BOUND -> {
                 if (predictedPosition.getX() < 0) {
                     this.position = new Vector2d(moveValidator.getCurrentBounds().upperRight().getX(), this.position.getY());
@@ -123,10 +121,11 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
                 yield false;
             }
             case 1 -> true;
-            default -> throw new IllegalStateException("jak rześki trzeba być, żeby nie żyć");
+            default -> throw new IllegalStateException("should not happen");
         };
     }
 
+    @SuppressWarnings("NullableProblems")
     @Override
     public int compareTo(AbstractAnimal other) {
         return Comparator.comparingInt(AbstractAnimal::getEnergy)
@@ -148,10 +147,6 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
 
     public int getAllDescendantsNumber() {
         return children.stream().mapToInt(AbstractAnimal::getAllDescendantsNumber).sum() + getChildrenNumber();
-    }
-
-    public Genome getGenome() {
-        return genome;
     }
 
     public int getEnergy() {
