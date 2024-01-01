@@ -152,7 +152,6 @@ public class MenuPresenter {
             BorderPane rootPane = loader.load();
 
             SimulationPresenter simulationPresenter = loader.getController();
-            simulationPresenter.setWorldMap(map);
 
             map.addObserver(simulationPresenter);
 
@@ -162,6 +161,8 @@ public class MenuPresenter {
                     Integer.parseInt(startingAnimalCount.getText()),
                     Integer.parseInt(plantGrowthPerDay.getText())
             );
+
+            simulationPresenter.setMapAndSimulation(map, simulation);
 
             if (saveToFileEnabled.isSelected()) {
                 simulation.addObserver(new CSVFileWriter(map.getId().toString()));

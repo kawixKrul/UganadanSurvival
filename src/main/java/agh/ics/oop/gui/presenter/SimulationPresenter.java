@@ -1,9 +1,11 @@
 package agh.ics.oop.gui.presenter;
 
+import agh.ics.oop.enums.SimulationState;
 import agh.ics.oop.interfaces.ChangeListener;
 import agh.ics.oop.interfaces.WorldElement;
 import agh.ics.oop.interfaces.WorldMap;
 import agh.ics.oop.model.Boundary;
+import agh.ics.oop.model.Simulation;
 import agh.ics.oop.model.Vector2d;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -18,14 +20,22 @@ import javafx.scene.layout.RowConstraints;
 
 public class SimulationPresenter implements ChangeListener<WorldMap> {
     private WorldMap map;
-    private static final int CEll_SIZE = 20;
+    private Simulation simulation;
+    private static final int CEll_SIZE = 22;
     @FXML
     private GridPane mapGrid;
     @FXML
     private Label descriptionLabel;
+    @FXML
+    public Button stopButton;
+    @FXML
+    public Button resumeButton;
+    @FXML
+    private Label animalInfoLabel;
 
-    public void setWorldMap(WorldMap map) {
+    public void setMapAndSimulation(WorldMap map, Simulation simulation) {
         this.map = map;
+        this.simulation = simulation;
     }
 
     @Override
@@ -47,7 +57,7 @@ public class SimulationPresenter implements ChangeListener<WorldMap> {
         mapGrid.getRowConstraints().clear();
     }
 
-    public synchronized void writeMap() {
+    public void writeMap() {
         Boundary boundary = map.getCurrentBounds();
         Label main = new Label("Map");
         GridPane.setHalignment(main, HPos.CENTER);
@@ -76,19 +86,46 @@ public class SimulationPresenter implements ChangeListener<WorldMap> {
             ImageView imgView = new ImageView(img);
             imgView.setFitHeight(CEll_SIZE);
             imgView.setFitWidth(CEll_SIZE);
-            Button button = new Button();
-            button.setGraphic(imgView);
-            button.setOnAction(e -> descriptionLabel.setText(element.toString()));
-            GridPane.setHalignment(button, HPos.CENTER);
-            mapGrid.add(button,
-                    position.getX() + 1,
-                    position.getY() + 1,
-                    1,
-                    1);
-//            if (element.getClass().equals(map.objectAt(position).getClass())) {
-//
-//            }
+            switch (element.getClass().getSimpleName()) {
+                case "CrazyAnimal", "RegularAnimal" ->  {
+                    Button button = new Button();
+                    button.setMinHeight(CEll_SIZE);
+                    button.setMinWidth(CEll_SIZE);
+                    button.setGraphic(imgView);
+                    button.setOnAction(e -> animalInfoLabel.setText(element.toString()));
+                    GridPane.setHalignment(button, HPos.CENTER);
+                    mapGrid.add(button,
+                            position.getX() + 1,
+                            position.getY() + 1,
+                            1,
+                            1);
 
+                }
+                case "Grass", "ToxicPlant" -> {
+                    GridPane.setHalignment(imgView, HPos.CENTER);
+                    mapGrid.add(imgView,
+                            position.getX() + 1,
+                            position.getY() + 1,
+                            1,
+                            1);
+                }
+            }
+        }
+    }
+
+    public void stopSimulation() {
+        simulation.setState(SimulationState.PAUSED);
+        if (simulation.getState() == SimulationState.PAUSED) {
+            stopButton.setDisable(true);
+            resumeButton.setDisable(false);
+        }
+    }
+
+    public void resumeSimulation() {
+        simulation.setState(SimulationState.RUNNING);
+        if (simulation.getState() == SimulationState.RUNNING) {
+            stopButton.setDisable(false);
+            resumeButton.setDisable(true);
         }
     }
 }
