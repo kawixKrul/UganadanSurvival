@@ -1,7 +1,7 @@
 package agh.ics.oop.abstractions;
 
 import agh.ics.oop.enums.MapObstacle;
-import agh.ics.oop.interfaces.MapChangeListener;
+import agh.ics.oop.interfaces.ChangeListener;
 import agh.ics.oop.interfaces.WorldElement;
 import agh.ics.oop.interfaces.WorldMap;
 import agh.ics.oop.model.Boundary;
@@ -18,7 +18,7 @@ abstract public class AbstractWorldMap implements WorldMap {
     private final int breedingConsumptionEnergy;
     private final UUID id = UUID.randomUUID();
     protected final Map<Vector2d, AbstractPlant> plants = Collections.synchronizedMap(new HashMap<>());
-    private final List<MapChangeListener> observers = new LinkedList<>();
+    private final List<ChangeListener> observers = new LinkedList<>();
     protected final Map<Vector2d, TreeSet<AbstractAnimal>> animals = Collections.synchronizedMap(new HashMap<>());
 
 
@@ -119,16 +119,16 @@ abstract public class AbstractWorldMap implements WorldMap {
 
     @Override
     public void mapChanged(String message) {
-        this.observers.forEach(observer -> observer.mapChanged(this, message));
+        this.observers.forEach(observer -> observer.objectChanged(this, message));
         //System.out.println(message);
     }
 
     @Override
-    public void addObserver(MapChangeListener observer) {
+    public void addObserver(ChangeListener observer) {
         this.observers.add(observer);
     }
 
-    public List<MapChangeListener> getObservers() {
+    public List<ChangeListener> getObservers() {
         return observers;
     }
 
@@ -166,10 +166,12 @@ abstract public class AbstractWorldMap implements WorldMap {
     public List<AbstractAnimal> removeDeadAnimals(int day) {
         List<AbstractAnimal> deaths = new LinkedList<>();
         for (TreeSet<AbstractAnimal> set : animals.values()) {
-            for (AbstractAnimal animal : set) {
-                if (!animal.checkIfAlive(day)) {
-                    deaths.add(animal);
-                    set.remove(animal);
+            synchronized (this) {
+                for (AbstractAnimal animal : set) {
+                    if (!animal.checkIfAlive(day)) {
+                        deaths.add(animal);
+                        set.remove(animal);
+                    }
                 }
             }
         }

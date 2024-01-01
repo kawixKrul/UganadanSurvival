@@ -48,9 +48,9 @@ public interface WorldMap extends MoveValidator {
 
     void mapChanged(String message);
 
-    void addObserver(MapChangeListener observer);
+    void addObserver(ChangeListener observer);
 
-    List<MapChangeListener> getObservers();
+    List<ChangeListener> getObservers();
 
     List<AbstractAnimal> procreateAllAnimals();
 

@@ -1,6 +1,6 @@
 package agh.ics.oop.gui.presenter;
 
-import agh.ics.oop.interfaces.MapChangeListener;
+import agh.ics.oop.interfaces.ChangeListener;
 import agh.ics.oop.interfaces.WorldElement;
 import agh.ics.oop.interfaces.WorldMap;
 import agh.ics.oop.model.Boundary;
@@ -16,7 +16,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 
-public class SimulationPresenter implements MapChangeListener {
+public class SimulationPresenter implements ChangeListener<WorldMap> {
     private WorldMap map;
     private static final int CEll_SIZE = 20;
     @FXML
@@ -29,7 +29,7 @@ public class SimulationPresenter implements MapChangeListener {
     }
 
     @Override
-    public void mapChanged(WorldMap worldMap, String message) {
+    public void objectChanged(WorldMap worldMap, String message) {
         Platform.runLater(() -> {
             drawMap();
             descriptionLabel.setText(message);

@@ -1,13 +1,14 @@
 package agh.ics.oop.util;
 
-import agh.ics.oop.interfaces.MapChangeListener;
+import agh.ics.oop.interfaces.ChangeListener;
 import agh.ics.oop.interfaces.WorldMap;
+import agh.ics.oop.model.Simulation;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class CSVFileWriter implements MapChangeListener {
+public class CSVFileWriter implements ChangeListener <Simulation> {
     private final FileWriter csvFile;
 
     public CSVFileWriter(String fileName) throws IOException{
@@ -18,10 +19,11 @@ public class CSVFileWriter implements MapChangeListener {
             }
         }
         this.csvFile = new FileWriter("logs/"+fileName);
+        this.csvFile.write("day, energy, children, genes, position, descendants, age, grass_eaten, death_day\n");
     }
 
     @Override
-    public void mapChanged(WorldMap worldMap, String message) {
+    public void objectChanged(Simulation worldMap, String message) {
         try {
             this.csvFile.write(message);
         } catch (IOException e) {
@@ -29,7 +31,6 @@ public class CSVFileWriter implements MapChangeListener {
         }
     }
 
-    // TODO remember to close this file
     public void closeFile() throws IOException {
         this.csvFile.close();
     }

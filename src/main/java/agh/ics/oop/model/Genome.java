@@ -45,4 +45,9 @@ public class Genome {
     public int getGenomeLength() {
         return genes.size();
     }
+
+    @Override
+    public String toString() {
+        return genes.toString();
+    }
 }

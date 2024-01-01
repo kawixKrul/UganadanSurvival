@@ -171,16 +171,13 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
 
     @Override
     public String toString() {
-        return "Animal{" +
-                "orientation=" + orientation +
-                ", position=" + position +
-                ", genome=" + genome +
-                ", energy=" + energy +
-                ", age=" + age +
-                ", children=" + children +
-                ", deathDay=" + deathDay +
-                ", grassConsumed=" + grassConsumed +
-                ", allDescendants=" + getAllDescendantsNumber() +
-                '}';
+        return String.join(",",
+                String.valueOf(this.energy),
+                String.valueOf(this.children.size()),
+                this.genome.toString(),
+                String.valueOf(this.getAllDescendantsNumber()),
+                String.valueOf(this.age),
+                String.valueOf(this.grassConsumed),
+                String.valueOf(this.deathDay == -1 ? "alive" : this.deathDay));
     }
 }

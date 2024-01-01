@@ -155,9 +155,6 @@ public class MenuPresenter {
             simulationPresenter.setWorldMap(map);
 
             map.addObserver(simulationPresenter);
-            if (saveToFileEnabled.isSelected()) {
-                map.addObserver(new CSVFileWriter(map.getId().toString()));
-            }
 
             var simulation = new Simulation(
                     map,
@@ -165,6 +162,10 @@ public class MenuPresenter {
                     Integer.parseInt(startingAnimalCount.getText()),
                     Integer.parseInt(plantGrowthPerDay.getText())
             );
+
+            if (saveToFileEnabled.isSelected()) {
+                simulation.addObserver(new CSVFileWriter(map.getId().toString()));
+            }
 
             configureSimulationScene(simulationStage, rootPane);
 
