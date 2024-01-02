@@ -4,6 +4,7 @@ import agh.ics.oop.abstractions.AbstractAnimal;
 import agh.ics.oop.abstractions.AbstractAnimalFactory;
 import agh.ics.oop.model.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -13,11 +14,15 @@ public class RegularAnimalFactory extends AbstractAnimalFactory {
     }
     @Override
     public AbstractAnimal create() {
-        return new RegularAnimal(Vector2d.getRandomVector2d(this.boundary), this.startEnergy, this.genomePattern.create());
+        return new RegularAnimal(Vector2d.getRandomVector2d(this.boundary),
+                this.startEnergy,
+                this.genomePattern.create());
     }
 
     @Override
     public AbstractAnimal create(Vector2d parentPosition, List<Integer> genes) {
-        return new RegularAnimal(parentPosition, this.breedingEnergy*2, this.genomePattern.create(genes));
+        return new RegularAnimal(parentPosition,
+                this.breedingEnergy*2,
+                this.genomePattern.create(new ArrayList<>(genes)));
     }
 }

@@ -1,5 +1,6 @@
 package agh.ics.oop.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -7,12 +8,12 @@ public class Genome {
     private final List<Integer> genes;
     private int activatedGene;
 
-    public Genome(List<Integer> genes, int activeGene) {
+    public Genome(ArrayList<Integer> genes, int activeGene) {
         this.genes = genes;
         this.activatedGene = activeGene;
     }
 
-    public Genome(List<Integer> genes) {
+    public Genome(ArrayList<Integer> genes) {
         this(genes, 0);
     }
 
@@ -33,7 +34,7 @@ public class Genome {
      */
     public void aBitOfCraziness() {
         if (Math.random() < 0.2) {
-            this.activatedGene = new Random().nextInt() % genes.size();
+            this.activatedGene = new Random().nextInt(genes.size());
         }
     }
 
@@ -43,5 +44,10 @@ public class Genome {
 
     public int getGenomeLength() {
         return genes.size();
+    }
+
+    @Override
+    public String toString() {
+        return String.join("", genes.stream().map(Object::toString).toList());
     }
 }

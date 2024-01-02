@@ -19,5 +19,5 @@ public abstract class AbstractPlant implements WorldElement {
 
     public int getEnergy() {
         return energy;
-    };
+    }
 }

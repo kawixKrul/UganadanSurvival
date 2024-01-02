@@ -2,6 +2,8 @@ package agh.ics.oop.enums;
 
 import agh.ics.oop.model.Vector2d;
 
+import java.util.Random;
+
 public enum MapDirection {
     NORTH,
     NORTHEAST,
@@ -11,19 +13,6 @@ public enum MapDirection {
     SOUTHWEST,
     WEST,
     NORTHWEST;
-
-    public String toString() {
-        return switch (this) {
-            case NORTH -> "Północ";
-            case SOUTH -> "Południe";
-            case WEST -> "Zachód";
-            case EAST -> "Wschód";
-            case NORTHWEST -> "Północny zachód";
-            case NORTHEAST -> "Północny wschód";
-            case SOUTHWEST -> "Południowy zachód";
-            case SOUTHEAST ->  "Południowy wschód";
-        };
-    }
 
     public Vector2d toUnitVector() {
         return switch (this) {
@@ -40,5 +29,9 @@ public enum MapDirection {
 
     public MapDirection next(int rotation) {
         return MapDirection.values()[(rotation + this.ordinal()) % 8];
+    }
+
+    public static MapDirection random() {
+        return MapDirection.values()[new Random().nextInt(0,8)];
     }
 }

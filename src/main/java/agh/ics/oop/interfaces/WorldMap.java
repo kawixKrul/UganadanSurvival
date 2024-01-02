@@ -1,25 +1,20 @@
 package agh.ics.oop.interfaces;
 
 import agh.ics.oop.abstractions.AbstractAnimal;
-import agh.ics.oop.model.Boundary;
 import agh.ics.oop.model.Vector2d;
 
 import java.util.List;
 import java.util.UUID;
 
-public interface WorldMap extends MoveValidator{
+@SuppressWarnings("unused")
+public interface WorldMap extends MoveValidator {
 
     /**
-     * Place a animal on the map.
+     * Place an animal on the map.
      *
      * @param animal The animal to place on the map.
      */
     void place(AbstractAnimal animal);
-
-    /**
-     * Moves an animal (if it is present on the map) according to specified direction.
-     * If the move is not possible, this method has no effect.
-     */
     void move(AbstractAnimal animal);
 
     /**
@@ -47,19 +42,21 @@ public interface WorldMap extends MoveValidator{
      */
     List<WorldElement> getElements();
 
-    /**
-     * Return current map boundries.
-     * @return Boundary object that specifies map boundries.
-     */
-    Boundary getCurrentBounds();
-
-    boolean isSimulationEnd();
-
-    void passDay(int energyToBreed,int fixedGrassSpawn);
+    void spawnPlants(int count);
 
     UUID getId();
 
     void mapChanged(String message);
 
-    void addObserver(MapChangeListener observer);
+    void addObserver(ChangeListener observer);
+
+    List<ChangeListener> getObservers();
+
+    List<AbstractAnimal> procreateAllAnimals();
+
+    List<AbstractAnimal> removeDeadAnimals(int day);
+
+    void consumePlants();
+
+    List<AbstractAnimal> getAnimals();
 }
