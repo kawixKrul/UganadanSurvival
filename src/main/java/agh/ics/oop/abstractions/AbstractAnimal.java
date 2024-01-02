@@ -82,13 +82,12 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
         this.orientation = this.orientation.next(this.genome.getGeneAndMoveToNext());
         Vector2d predictedPosition = this.position.add(this.orientation.toUnitVector());
         switch (moveValidator.canMoveTo(predictedPosition)) {
-            case NONE -> {
-                this.position = predictedPosition;
-                this.energy -= REQUIRED_ENERGY_TO_MOVE;
-            }
+            case NONE -> this.position = predictedPosition;
             case TOXIC_PLANT -> {
                 if (Math.random() < 0.2) {
                     this.position = this.position.add(MapDirection.random().toUnitVector());
+                } else {
+                    this.position = predictedPosition;
                 }
             }
             case TOP_BOTTOM_BOUND -> this.orientation.next(4);
@@ -101,6 +100,7 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
             }
             default -> throw new IllegalStateException("Unexpected value: " + moveValidator.canMoveTo(predictedPosition));
         }
+        this.energy -= REQUIRED_ENERGY_TO_MOVE;
     }
 
     public void eatGrass(AbstractPlant plant) {
