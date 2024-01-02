@@ -22,8 +22,9 @@ public class GenomePattern implements AbstractFactory<Genome> {
 
     @Override
     public Genome create() {
+        var random = new Random();
         return new Genome(new ArrayList<>( IntStream.range(0, genomeLength)
-                .mapToObj(i -> (int) (Math.random() * 8))
+                .mapToObj(i -> random.nextInt(0,8))
                 .toList()));
     }
 
@@ -40,7 +41,7 @@ public class GenomePattern implements AbstractFactory<Genome> {
                 .toList());
         Collections.shuffle(indexes);
         for (int idx : indexes.subList(0, mutations)) {
-            genome.setGene(idx, mutator.nextInt() % 8);
+            genome.setGene(idx, mutator.nextInt(0,8));
         }
         return genome;
     }

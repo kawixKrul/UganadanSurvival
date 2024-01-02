@@ -41,10 +41,10 @@ public enum MapDirection {
     }
 
     public MapDirection next(int rotation) {
-        return MapDirection.values()[Math.abs((rotation + this.ordinal()) % 8)];
+        return MapDirection.values()[(rotation + this.ordinal()) % 8];
     }
 
     public static MapDirection random() {
-        return MapDirection.values()[new Random().nextInt(8)];
+        return MapDirection.values()[new Random().nextInt(0,8)];
     }
 }

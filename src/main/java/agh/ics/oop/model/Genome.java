@@ -48,6 +48,6 @@ public class Genome {
 
     @Override
     public String toString() {
-        return genes.toString();
+        return String.join("", genes.stream().map(Object::toString).toList());
     }
 }

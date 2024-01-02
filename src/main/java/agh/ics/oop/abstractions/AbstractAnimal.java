@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 
 public abstract class AbstractAnimal implements WorldElement, Comparable<AbstractAnimal> {
-    private static final int REQUIRED_ENERGY_TO_MOVE = 10;
+    protected static final int REQUIRED_ENERGY_TO_MOVE = 10;
     private static final AtomicInteger ID_CONSTRUCTOR = new AtomicInteger(0);
     private final int id = ID_CONSTRUCTOR.getAndIncrement();
     private MapDirection orientation = MapDirection.random();
@@ -178,6 +178,6 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
                 String.valueOf(this.getAllDescendantsNumber()),
                 String.valueOf(this.age),
                 String.valueOf(this.grassConsumed),
-                String.valueOf(this.deathDay == -1 ? "alive" : this.deathDay));
+                this.energy > 0 ? "alive" : "dead");
     }
 }
