@@ -115,7 +115,7 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
      * @return true if animal lives false otherwise
      */
     public boolean checkIfAlive(int day) {
-        return switch (this.energy < 0 ? 0 : 1) {
+        return switch (this.energy <= 0 ? 0 : 1) {
             case 0 -> {
                 this.deathDay = day;
                 yield false;
@@ -167,6 +167,14 @@ public abstract class AbstractAnimal implements WorldElement, Comparable<Abstrac
 
     public int getId() {
         return id;
+    }
+
+    public Genome getGenome() {
+        return genome;
+    }
+
+    public int getDeathDay() {
+        return deathDay;
     }
 
     @Override
