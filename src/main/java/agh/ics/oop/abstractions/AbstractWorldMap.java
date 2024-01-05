@@ -5,6 +5,7 @@ import agh.ics.oop.interfaces.ChangeListener;
 import agh.ics.oop.interfaces.WorldElement;
 import agh.ics.oop.interfaces.WorldMap;
 import agh.ics.oop.model.Boundary;
+import agh.ics.oop.model.Genome;
 import agh.ics.oop.model.Vector2d;
 
 import java.util.*;
@@ -20,6 +21,7 @@ abstract public class AbstractWorldMap implements WorldMap {
     protected final Map<Vector2d, AbstractPlant> plants = Collections.synchronizedMap(new HashMap<>());
     private final List<ChangeListener> observers = new LinkedList<>();
     protected final Map<Vector2d, TreeSet<AbstractAnimal>> animals = Collections.synchronizedMap(new HashMap<>());
+    private String mapInfo = "";
 
 
     public AbstractWorldMap(Boundary boundary,
@@ -39,14 +41,14 @@ abstract public class AbstractWorldMap implements WorldMap {
         for (int i = 0; i < count; ++i) {
             spawnAnimal();
         }
-        mapChanged("Spawned " + count + " animals");
+        mapChanged(this.mapInfo);
     }
 
     public void spawnPlants(int count) {
         for (int i = 0; i < count; ++i) {
             spawnPlant();
         }
-        mapChanged("Spawned " + count + " plants");
+        mapChanged(this.mapInfo);
     }
 
     public void spawnAnimal() {
@@ -120,7 +122,6 @@ abstract public class AbstractWorldMap implements WorldMap {
     @Override
     public void mapChanged(String message) {
         this.observers.forEach(observer -> observer.objectChanged(this, message));
-        //System.out.println(message);
     }
 
     @Override
@@ -158,7 +159,7 @@ abstract public class AbstractWorldMap implements WorldMap {
         for (AbstractAnimal child : children) {
             place(child);
         }
-        mapChanged("Spawned " + children.size() + " children");
+        mapChanged(this.mapInfo);
         return children;
     }
 
@@ -177,7 +178,7 @@ abstract public class AbstractWorldMap implements WorldMap {
                 }
             }
         }
-        mapChanged("Killed " + deaths.size() + " animals");
+        mapChanged(this.mapInfo);
         return deaths;
     }
 
@@ -193,7 +194,7 @@ abstract public class AbstractWorldMap implements WorldMap {
                 }
             }
         }
-        mapChanged("Consumed plants");
+        mapChanged(this.mapInfo);
     }
 
     @Override
@@ -206,4 +207,35 @@ abstract public class AbstractWorldMap implements WorldMap {
         }
         return MapObstacle.NONE;
     }
+
+    @Override
+    public int getFreeFieldsCount() {
+        return this.boundary.upperRight().getX() *
+                this.boundary.upperRight().getY() -
+                getElements().stream()
+                        .map(WorldElement::getPosition)
+                        .distinct()
+                        .toList()
+                        .size();
+    }
+
+    @Override
+    public Genome getMostPopularGenotype() {
+        Map<Genome, Integer> genomeCount = new HashMap<>();
+        getAnimals().stream()
+                .map(AbstractAnimal::getGenome)
+                .forEach(g -> genomeCount.put(g, genomeCount.getOrDefault(g, 0) + 1));
+        return genomeCount.entrySet()
+                .stream()
+                .max(Comparator.comparingInt(Map.Entry::getValue))
+                .map(Map.Entry::getKey)
+                .orElseThrow();
+    }
+
+    @Override
+    public void setInfo(String info) {
+        this.mapInfo = info;
+    }
+
+
 }

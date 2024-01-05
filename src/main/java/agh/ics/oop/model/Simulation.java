@@ -16,6 +16,7 @@ public class Simulation implements Runnable {
     private final WorldMap map;
     private final int plantGrowthPerDay;
     private final List<AbstractAnimal> activeAnimals = new LinkedList<>();
+    private final List<AbstractAnimal> deadAnimals = new LinkedList<>();
     private int day = 0;
     private final List<CSVFileWriter> observers = new LinkedList<>();
     private SimulationState state = SimulationState.INACTIVE;
@@ -36,7 +37,9 @@ public class Simulation implements Runnable {
         while (true) {
             switch (state) {
                 case RUNNING -> {
-                    activeAnimals.removeAll(map.removeDeadAnimals(day));
+                    var dead = map.removeDeadAnimals(day);
+                    deadAnimals.addAll(dead);
+                    activeAnimals.removeAll(dead);
                     if (activeAnimals.isEmpty()) {
                         setState(SimulationState.FINISHED);
                         continue;
@@ -49,8 +52,11 @@ public class Simulation implements Runnable {
                     map.spawnPlants(plantGrowthPerDay);
                     activeAnimals.forEach(AbstractAnimal::incrementAge);
                     day++;
-                    System.out.println("Day " + day);
-                    simulationChanged(this.toString());
+                    simulationChanged(String.join("\n",
+                            activeAnimals.stream()
+                                    .map(AbstractAnimal::toString)
+                                    .toList()) + "\n");
+                    map.setInfo(this.toString());
                     suspendSimulation();
                 }
                 case PAUSED, INACTIVE -> suspendSimulation();
@@ -93,7 +99,26 @@ public class Simulation implements Runnable {
 
     @Override
     public String toString() {
-        return String.join("\n", activeAnimals.stream().map(a -> day+","+a.toString()).toList())+"\n";
+        return String.join("\n",
+                "Day: " + day,
+                "Animal count: " + activeAnimals.size(),
+                "Free fields: " + map.getFreeFieldsCount(),
+                "Most popular genotype: " + map.getMostPopularGenotype(),
+                "Average animal energy: " + activeAnimals.stream()
+                        .mapToInt(AbstractAnimal::getEnergy)
+                        .average()
+                        .orElse(0),
+                "Average death day" + deadAnimals.stream()
+                        .mapToInt(AbstractAnimal::getDeathDay)
+                        .average()
+                        .orElse(0),
+                "Average children number: " + (activeAnimals.stream()
+                        .mapToInt(AbstractAnimal::getChildrenNumber)
+                        .average()
+                        .orElse(0) + deadAnimals.stream()
+                .mapToInt(AbstractAnimal::getChildrenNumber)
+                .average()
+                .orElse(0)));
     }
 
     public void setState(SimulationState state) {

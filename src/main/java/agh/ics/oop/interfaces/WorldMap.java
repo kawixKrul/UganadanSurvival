@@ -1,6 +1,7 @@
 package agh.ics.oop.interfaces;
 
 import agh.ics.oop.abstractions.AbstractAnimal;
+import agh.ics.oop.model.Genome;
 import agh.ics.oop.model.Vector2d;
 
 import java.util.List;
@@ -59,4 +60,10 @@ public interface WorldMap extends MoveValidator {
     void consumePlants();
 
     List<AbstractAnimal> getAnimals();
+
+    int getFreeFieldsCount();
+
+    Genome getMostPopularGenotype();
+
+    void setInfo(String info);
 }
